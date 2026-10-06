@@ -1,0 +1,111 @@
+{
+ "semilla": 20261007,
+ "A": {
+  "campanias": 200,
+  "matrices_con_encabezado_mal_detectado": 0,
+  "matrices": 894,
+  "campanias_con_error_de_lectura": 0,
+  "celdas_relevadas": 7523,
+  "matrices_beta": 2682,
+  "pares_spearman": 1206,
+  "columnas": 8017,
+  "columnas_sin_sitio": 0,
+  "estados_distintos": 0,
+  "max_dif": {
+   "S": 0.0,
+   "N": 0.0,
+   "H": 1.7763568394002505e-15,
+   "D1": 2.220446049250313e-16,
+   "J": 5.551115123125783e-16,
+   "beta": 0.0,
+   "rho": 2.220446049250313e-16,
+   "p": 1.7991164114050662e-13,
+   "q": 5.735412145213559e-13
+  },
+  "errores_consola": []
+ },
+ "C_tipoI": {
+  "5": {
+   "pares_p05": 0.06316959773600161,
+   "alguna_p05": 0.4755,
+   "alguna_q05": 0.0915
+  },
+  "7": {
+   "pares_p05": 0.05590124448012846,
+   "alguna_p05": 0.4435,
+   "alguna_q05": 0.069
+  },
+  "10": {
+   "pares_p05": 0.05294058610999598,
+   "alguna_p05": 0.4275,
+   "alguna_q05": 0.066
+  },
+  "15": {
+   "pares_p05": 0.055933560136081646,
+   "alguna_p05": 0.4415,
+   "alguna_q05": 0.0645
+  },
+  "25": {
+   "pares_p05": 0.05197078831532613,
+   "alguna_p05": 0.4055,
+   "alguna_q05": 0.051
+  }
+ },
+ "C_potencia": {
+  "n=7": {
+   "w=0.0": 0.085,
+   "w=0.3": 0.107,
+   "w=0.5": 0.22,
+   "w=0.7": 0.44,
+   "w=0.9": 0.696
+  },
+  "n=10": {
+   "w=0.0": 0.074,
+   "w=0.3": 0.111,
+   "w=0.5": 0.314,
+   "w=0.7": 0.629,
+   "w=0.9": 0.909
+  },
+  "n=15": {
+   "w=0.0": 0.07,
+   "w=0.3": 0.118,
+   "w=0.5": 0.484,
+   "w=0.7": 0.865,
+   "w=0.9": 0.981
+  },
+  "n=25": {
+   "w=0.0": 0.068,
+   "w=0.3": 0.181,
+   "w=0.5": 0.759,
+   "w=0.7": 0.982,
+   "w=0.9": 0.999
+  }
+ },
+ "B": {
+  "no_relevados=0.0": {
+   "sesgo_relativo_medio_pct": -4.0,
+   "pares_p05_ceros": 0.054,
+   "pares_p05_estados": 0.054566666666666666
+  },
+  "no_relevados=0.1": {
+   "sesgo_relativo_medio_pct": -13.613100077287163,
+   "pares_p05_ceros": 0.08243333333333333,
+   "pares_p05_estados": 0.05606666666666667
+  },
+  "no_relevados=0.2": {
+   "sesgo_relativo_medio_pct": -23.188343511237015,
+   "pares_p05_ceros": 0.2222,
+   "pares_p05_estados": 0.0578
+  },
+  "no_relevados=0.3": {
+   "sesgo_relativo_medio_pct": -32.77346993818491,
+   "pares_p05_ceros": 0.4735,
+   "pares_p05_estados": 0.05733333333333333
+  },
+  "no_relevados=0.4": {
+   "sesgo_relativo_medio_pct": -42.45107376992761,
+   "pares_p05_ceros": 0.7822666666666667,
+   "pares_p05_estados": 0.049633333333333335
+  }
+ }
+}

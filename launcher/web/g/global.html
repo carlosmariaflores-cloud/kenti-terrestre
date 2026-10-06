@@ -1,0 +1,1175 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kenti Master</title>
+<meta name="description" content="Kenti Master: consolidado de campaña. Sitios con coordenadas, planillas de limnología y flora y fauna, esfuerzo, índices, concordancia, KMZ y Excel.">
+<style>[hidden]{display:none!important}</style>
+<style>
+:root{
+  color-scheme: light;
+  --page:#f2f4ef; --surface:#ffffff; --surface-2:#eaeee5; --ink:#18200f; --ink-2:#465040; --muted:#768070;
+  --line:#dde2d6; --line-strong:#c3cab9; --accent:#3d6b1c; --accent-ink:#ffffff; --accent-soft:#e2ecd5;
+  --comet:#b0381d; --s1:#2a78d6; --s2:#eb6834; --na-stripe:#dfe3d8;
+  --note-bg:#f6efdc; --note-ink:#6b4c05; --shadow:0 1px 2px rgba(24,32,15,.06),0 8px 24px rgba(24,32,15,.08);
+  --ok:#3d6b1c; --ok-bg:#e2ecd5; --mid:#8a6a0a; --mid-bg:#f6efdc; --bad:#b0381d; --bad-bg:#f7e2dc; --na-bg:#eaeee5;
+  --serif:"Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --sans:"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --page:#0e120c; --surface:#161c13; --surface-2:#1f271b; --ink:#e8eee1; --ink-2:#b8c2ae; --muted:#86917b;
+    --line:#29321f; --line-strong:#3a4631; --accent:#8fc35a; --accent-ink:#0f150a; --accent-soft:#22301a;
+    --comet:#e5714a; --s1:#3987e5; --s2:#d95926; --na-stripe:#2a3324;
+    --note-bg:#2e2610; --note-ink:#ecc86f; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+    --ok:#8fc35a; --ok-bg:#22301a; --mid:#ecc86f; --mid-bg:#2e2610; --bad:#e5714a; --bad-bg:#3a1c14; --na-bg:#1f271b;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --page:#0e120c; --surface:#161c13; --surface-2:#1f271b; --ink:#e8eee1; --ink-2:#b8c2ae; --muted:#86917b;
+  --line:#29321f; --line-strong:#3a4631; --accent:#8fc35a; --accent-ink:#0f150a; --accent-soft:#22301a;
+  --comet:#e5714a; --s1:#3987e5; --s2:#d95926; --na-stripe:#2a3324;
+  --note-bg:#2e2610; --note-ink:#ecc86f; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+  --ok:#8fc35a; --ok-bg:#22301a; --mid:#ecc86f; --mid-bg:#2e2610; --bad:#e5714a; --bad-bg:#3a1c14; --na-bg:#1f271b;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--page); color:var(--ink); font:15px/1.5 var(--sans); margin:0}
+.wrap{max-width:1240px; margin:0 auto; padding-inline:clamp(16px,3vw,32px); padding-block:0 64px}
+button,input,select,textarea{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+h2,h3,h4{text-wrap:balance; margin:0}
+.mono{font-family:var(--mono)}
+.muted{color:var(--muted)}
+
+/* Header */
+.app-head{display:flex; align-items:center; justify-content:space-between; gap:16px 24px; flex-wrap:wrap; padding-block:18px 14px}
+.brand{display:flex; align-items:center; gap:14px; min-width:0}
+.brand svg{width:64px; height:64px; flex:none}
+.wordmark{font-family:var(--serif); font-weight:600; font-size:30px; line-height:1.05; letter-spacing:-.01em}
+.wordmark em{font-weight:400; color:var(--comet); font-style:normal}
+.meta{color:var(--ink-2); font-size:13px; margin-top:4px}
+.meta .chip{margin-left:6px}
+.user{display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink-2); line-height:1.25}
+.user b{color:var(--ink); font-weight:600}
+.head-right{display:flex; align-items:center; gap:14px 18px; flex-wrap:wrap}
+.avatar{width:36px; height:36px; border-radius:50%; background:var(--accent); color:var(--accent-ink); display:grid; place-items:center; font-weight:700; font-size:13px; letter-spacing:.04em}
+.chip{display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; padding:2px 9px; border-radius:999px; background:var(--note-bg); color:var(--note-ink); white-space:nowrap}
+.chip.soft{background:var(--surface-2); color:var(--ink-2)}
+.chip.ok{background:var(--ok-bg); color:var(--ok)} .chip.mid{background:var(--mid-bg); color:var(--mid)} .chip.bad{background:var(--bad-bg); color:var(--bad)} .chip.na{background:var(--na-bg); color:var(--muted)}
+.ver{font-family:var(--mono); font-size:11.5px; color:var(--muted); margin-left:6px}
+
+/* Tabs */
+.tabbar{display:flex; align-items:center; gap:8px 16px; border-bottom:1px solid var(--line)}
+.tabs{display:flex; gap:2px; overflow-x:auto; scrollbar-width:thin; flex:1 1 auto; min-width:0}
+.tab{appearance:none; background:none; border:0; border-bottom:2px solid transparent; margin-bottom:-1px; padding:12px 12px 11px; font-size:14px; font-weight:600; color:var(--ink-2); cursor:pointer; white-space:nowrap; display:flex; align-items:baseline; gap:8px}
+.tab .n{font-family:var(--mono); font-size:12px; font-weight:500; color:var(--muted)}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink); border-bottom-color:var(--accent)}
+.tab[aria-selected="true"] .n{color:var(--accent)}
+.tabbar .btn{flex:none; display:inline-flex; align-items:center; gap:7px}
+.tabbar .btn svg{width:15px; height:15px; flex:none}
+@media (max-width:640px){ .tabbar{flex-wrap:wrap} .tabbar .btn{margin-block:6px} }
+
+.panel{padding-block:24px 0; display:grid; gap:20px}
+.panel[hidden]{display:none!important}
+.panel-head{display:flex; justify-content:space-between; align-items:flex-end; gap:12px 20px; flex-wrap:wrap}
+.panel-head h2{font-family:var(--serif); font-weight:600; font-size:24px; letter-spacing:-.005em}
+.panel-head p{margin:4px 0 0; color:var(--ink-2); max-width:78ch; font-size:14px}
+.actions{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+.btn{appearance:none; border:1px solid var(--line-strong); background:var(--surface); border-radius:8px; padding:7px 12px; font-size:13px; font-weight:600; cursor:pointer; color:var(--ink)}
+.btn:hover{border-color:var(--ink-2)}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{border-color:transparent; background:transparent; color:var(--ink-2)}
+.btn.ghost:hover{background:var(--surface-2); color:var(--ink)}
+.btn[disabled]{opacity:.5; cursor:not-allowed}
+.btn.sm{padding:3px 9px; font-size:12px}
+@media (prefers-reduced-motion: no-preference){ .tab,.btn{transition:color .15s, background-color .15s, border-color .15s} }
+
+.note{background:var(--note-bg); color:var(--note-ink); border-radius:8px; padding:9px 14px; font-size:13.5px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:space-between}
+.note button{color:inherit; text-decoration:underline; background:none; border:0; padding:0; cursor:pointer; font-weight:600}
+
+/* Stats */
+.stats{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); border-block:1px solid var(--line)}
+.stat{padding:12px 16px; border-left:1px solid var(--line)}
+.stat:first-child{border-left:0; padding-left:0}
+.stat .k{font-size:11.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); font-weight:600}
+.stat .v{font-family:var(--serif); font-size:28px; font-weight:600; line-height:1.15; margin-top:2px}
+.stat .v small{font-family:var(--sans); font-size:13px; font-weight:500; color:var(--ink-2); margin-left:4px}
+@media (max-width:720px){ .stats{grid-template-columns:repeat(2,minmax(0,1fr))} .stat:nth-child(3){border-left:0; padding-left:0} .stat:nth-child(n+3){border-top:1px solid var(--line)} }
+
+/* Cards */
+.card{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px 18px}
+.card-head{display:flex; justify-content:space-between; align-items:flex-start; gap:8px 14px; flex-wrap:wrap; margin-bottom:10px}
+.card-head h3{font-size:15px; font-weight:700}
+.card-head .sub{font-size:12.5px; color:var(--ink-2); margin-top:2px; max-width:90ch}
+.foot{font-size:12.5px; color:var(--muted); max-width:90ch; margin:0}
+.grid2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px}
+@media (max-width:860px){ .grid2{grid-template-columns:1fr} }
+details.formulas{font-size:13px; color:var(--ink-2); margin-top:10px}
+details.formulas summary{cursor:pointer; font-weight:600; color:var(--ink)}
+details.formulas ul{margin:6px 0 0; padding-left:18px}
+
+/* Form (proyecto) */
+.form{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px 16px}
+.form label{display:grid; gap:4px; font-size:12px; font-weight:600; color:var(--ink-2)}
+.form input,.form select,.form textarea{border:1px solid var(--line-strong); border-radius:8px; padding:7px 9px; background:var(--surface); font-size:13.5px; font-weight:400; color:var(--ink); width:100%}
+.form textarea{min-height:72px; resize:vertical}
+.form .wide{grid-column:1 / -1}
+
+/* Editable table */
+.sheet{background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:auto; max-height:70vh}
+table.grid{border-collapse:separate; border-spacing:0; font-size:13px; font-variant-numeric:tabular-nums; min-width:100%}
+.grid th{position:sticky; top:0; z-index:2; background:var(--surface-2); font-weight:600; font-size:12px; color:var(--ink-2); text-align:left; padding:7px 9px; border-bottom:1px solid var(--line-strong); border-right:1px solid var(--line); white-space:nowrap; vertical-align:bottom}
+.grid th small{display:block; font-weight:400; color:var(--muted); font-size:11px}
+.grid td{border-right:1px solid var(--line); border-bottom:1px solid var(--line); padding:0; background:var(--surface); position:relative; vertical-align:top}
+.grid input,.grid select,.grid textarea{border:0; background:transparent; width:100%; min-width:100px; padding:7px 9px; border-radius:0; font:inherit; font-size:13px; color:var(--ink)}
+.grid textarea{min-width:240px; min-height:52px; resize:vertical; line-height:1.35}
+.grid select{cursor:pointer; padding-right:4px}
+.grid input:focus,.grid select:focus,.grid textarea:focus{outline:none; box-shadow:inset 0 0 0 2px var(--accent); background:var(--surface)}
+.grid input::placeholder,.grid textarea::placeholder{color:var(--muted); font-weight:400}
+.grid .in-num{text-align:right; min-width:80px}
+.grid .in-date{min-width:130px}
+.grid .in-check{width:auto; min-width:0; margin:9px 12px}
+.grid td.calc{padding:7px 9px; white-space:nowrap; font-weight:600}
+.grid td.rmc{width:34px; min-width:34px; text-align:center; border-right:0}
+.grid .rm{appearance:none; border:0; background:none; color:var(--muted); cursor:pointer; font-size:15px; line-height:1; padding:7px 8px}
+.grid .rm:hover{color:var(--comet)}
+.grid td.wide-c input{min-width:200px}
+.grid td.narrow input,.grid td.narrow select{min-width:70px}
+.grid tr.g-ok td{background:color-mix(in srgb, var(--ok-bg) 35%, var(--surface))}
+.grid tr.g-bad td{background:color-mix(in srgb, var(--bad-bg) 40%, var(--surface))}
+.sheet-foot{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; font-size:12.5px; color:var(--ink-2); margin-top:-12px}
+.empty{padding:36px 20px; text-align:center; color:var(--ink-2); font-size:13.5px}
+
+/* Results table */
+.tbl-wrap{overflow-x:auto}
+table.res{border-collapse:collapse; width:100%; font-size:13.5px; font-variant-numeric:tabular-nums}
+.res th,.res td{padding:7px 10px; text-align:right; border-bottom:1px solid var(--line); vertical-align:top}
+.res th{font-size:12px; font-weight:600; color:var(--ink-2); vertical-align:bottom}
+.res td:first-child,.res th:first-child{text-align:left}
+.res td.l,.res th.l{text-align:left; white-space:normal}
+.res td small{font-weight:500; color:var(--muted); font-size:11px}
+
+/* Bars */
+.bars{display:grid; gap:6px; font-size:12.5px}
+.bar{display:grid; grid-template-columns:minmax(120px,1.2fr) minmax(0,3fr) 40px; align-items:center; gap:10px}
+.bar .lab{color:var(--ink-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.bar .trk{display:block; height:12px; background:var(--surface-2); border-radius:6px; overflow:hidden}
+.bar .fil{display:block; height:100%; background:var(--accent); border-radius:6px}
+.bar .fil.c2{background:var(--s1)} .bar .fil.c3{background:var(--s2)} .bar .fil.c4{background:var(--comet)}
+.bar .val{text-align:right; font-weight:600; font-variant-numeric:tabular-nums}
+
+.chart{width:100%; position:relative}
+.chart svg{display:block; width:100%; overflow:visible; font-family:var(--sans)}
+
+/* Brechas ND */
+.nd{display:grid; gap:12px}
+.nd-head{display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:6px}
+.nd-head h3{font-size:15px}
+.nd-head .sub{font-size:12.5px; color:var(--ink-2)}
+table.res.nd-t td{white-space:normal}
+.nd-t select{border:1px solid var(--line-strong); border-radius:6px; background:var(--surface); padding:3px 6px; font-size:12.5px; color:var(--ink)}
+.nd-t select.e-cumple{border-color:var(--ok); background:var(--ok-bg); color:var(--ok)}
+.nd-t select.e-parcial{border-color:var(--mid); background:var(--mid-bg); color:var(--mid)}
+.nd-t select.e-no{border-color:var(--bad); background:var(--bad-bg); color:var(--bad)}
+.nd-t input{border:1px solid var(--line); border-radius:6px; background:var(--surface); padding:3px 7px; font-size:12.5px; width:100%; min-width:200px; color:var(--ink)}
+.auto{font-size:12px; color:var(--ink-2)}
+.auto b{font-weight:600}
+
+/* Toast, dialog */
+#toast[hidden]{display:none}
+#toast{position:fixed; left:50%; bottom:20px; transform:translateX(-50%); z-index:60; background:var(--ink); color:var(--page); padding:9px 14px; border-radius:8px; font-size:13.5px; box-shadow:var(--shadow); display:flex; gap:14px; align-items:center; max-width:calc(100% - 32px)}
+#toast button{background:none; border:0; color:inherit; font-weight:700; text-decoration:underline; cursor:pointer; padding:0}
+dialog{border:1px solid var(--line); border-radius:12px; background:var(--surface); color:var(--ink); padding:20px; width:min(560px, calc(100% - 32px)); box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(14,18,12,.45)}
+dialog h2{font-family:var(--serif); font-size:21px; margin-bottom:6px}
+dialog p{margin:0 0 10px; font-size:13.5px; color:var(--ink-2)}
+dialog .row{display:flex; justify-content:flex-end; gap:8px; margin-top:12px}
+.app-save{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; font-size:12.5px; color:var(--ink-2)}
+footer.foot-k{margin-top:40px; padding-top:14px; border-top:1px solid var(--line); font-size:12.5px; color:var(--muted); display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+
+.ent-cols{display:flex; flex-wrap:wrap; gap:6px 14px}
+.ent-col{display:flex; align-items:center; gap:6px; font-size:12.5px; padding:3px 8px; border:1px solid var(--line); border-radius:8px; background:var(--page)}
+.ent-col.unm{border-color:var(--comet); background:var(--bad-bg)}
+.ent-col select{border:1px solid var(--line-strong); border-radius:6px; background:var(--surface); font-size:12px; padding:2px 4px; color:var(--ink); max-width:220px}
+.card.ent{margin-bottom:0}
+.ent-list{display:grid; gap:14px}
+.esf-btn{border:0; cursor:pointer}
+.esf-btn:hover{filter:brightness(.95)}
+table.res.esf td{text-align:center} table.res.esf td:first-child{text-align:left}
+table.res.hm td{min-width:44px; text-align:center; font-size:12px} table.res.hm th{font-size:11px}
+.vb-label{font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.06em}
+.grid .in-num{min-width:96px}
+.grid .mono{font-family:var(--mono); font-size:12.5px}
+.form select{border:1px solid var(--line-strong); border-radius:8px; padding:7px 9px; background:var(--surface); font-size:13.5px; font-weight:400; color:var(--ink)}
+dialog textarea{min-height:180px}
+</style>
+<style>
+@font-face{font-family:"Public Sans";src:url(/fuentes/PublicSans-Regular.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Public Sans";src:url(/fuentes/PublicSans-Medium.woff2) format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"Public Sans";src:url(/fuentes/PublicSans-SemiBold.woff2) format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Public Sans";src:url(/fuentes/PublicSans-Bold.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Source Serif 4";src:url(/fuentes/SourceSerif4-Roman.ttf) format("truetype");font-weight:200 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Source Serif 4";src:url(/fuentes/SourceSerif4-Italic.ttf) format("truetype");font-weight:200 900;font-style:italic;font-display:swap}
+@font-face{font-family:"IBM Plex Mono";src:url(/fuentes/IBMPlexMono-Regular.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"IBM Plex Mono";src:url(/fuentes/IBMPlexMono-Medium.woff2) format("woff2");font-weight:500;font-display:swap}
+</style>
+</head>
+<body>
+<div id="kt-bar" style="display:flex;align-items:center;gap:12px;padding:6px 16px;background:var(--surface-2,#eaeee5);border-bottom:1px solid var(--line,#dde2d6);font:500 13px/1.2 var(--sans,system-ui,sans-serif);color:var(--ink-2,#465040)"><a href="/" onclick="event.preventDefault();setTimeout(function(){location.href='/'},700)" style="color:var(--accent,#3d6b1c);text-decoration:none;font-weight:600">&larr; Kenti Terrestre</a><span style="opacity:.6">/</span><span>Análisis global</span></div>
+
+<div class="wrap">
+  <header class="app-head">
+    <div class="brand">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="var(--accent-soft)"/><circle cx="20" cy="24" r="6" fill="var(--s1)"/><circle cx="44" cy="22" r="6" fill="var(--accent)"/><circle cx="26" cy="44" r="6" fill="var(--comet)"/><circle cx="46" cy="42" r="6" fill="var(--s2)"/><path d="M20 24L44 22M20 24L26 44M44 22L46 42M26 44L46 42" stroke="var(--ink-2)" stroke-width="1.5" opacity=".5"/></svg>
+      <div>
+        <div class="wordmark">Kenti <em>Master</em></div>
+        <div class="meta"><span id="meta-proy">Consolidado de campaña</span> <span class="chip" id="ex-chip">Datos de ejemplo</span></div>
+      </div>
+    </div>
+    <div class="head-right">
+      <div class="user" title="Recibe las planillas de todo el equipo">
+        <span class="avatar" aria-hidden="true">KM</span>
+        <div>Módulo<span class="ver">v0.1</span><br><b>Administrador</b></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="tabbar">
+    <nav class="tabs" role="tablist" aria-label="Secciones">
+      <button class="tab" role="tab" data-tab="sit" aria-selected="true"><span class="n">1</span>Sitios</button>
+      <button class="tab" role="tab" data-tab="ent" aria-selected="false" tabindex="-1"><span class="n">2</span>Planillas <span class="chip soft" id="ent-n" hidden></span></button>
+      <button class="tab" role="tab" data-tab="esf" aria-selected="false" tabindex="-1"><span class="n">3</span>Esfuerzo</button>
+      <button class="tab" role="tab" data-tab="lim" aria-selected="false" tabindex="-1"><span class="n">4</span>Limnología</button>
+      <button class="tab" role="tab" data-tab="ter" aria-selected="false" tabindex="-1"><span class="n">5</span>Flora y fauna</button>
+      <button class="tab" role="tab" data-tab="con" aria-selected="false" tabindex="-1"><span class="n">6</span>Concordancia</button>
+      <button class="tab" role="tab" data-tab="map" aria-selected="false" tabindex="-1"><span class="n">7</span>Mapa y KMZ</button>
+      <button class="tab" role="tab" data-tab="ctl" aria-selected="false" tabindex="-1"><span class="n">8</span>Control <span class="chip soft" id="ctl-n" hidden></span></button>
+    </nav>
+    <button class="btn" id="btn-export" type="button" title="Libro de Excel con el consolidado"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3M3 12v1.5h10V12"/></svg>Exportar a Excel</button>
+  </div>
+
+  <div class="note" id="ex-note"><span>Estás viendo una <b>campaña de ejemplo</b> (ficticia, con planillas simuladas y huecos a propósito). Podés cargar las tuyas encima o empezar una <button id="btn-clear">campaña nueva</button>.</span><button id="btn-reset">Restaurar ejemplo</button></div>
+
+  <!-- 1 · SITIOS -->
+  <section class="panel" id="p-sit">
+    <div class="panel-head">
+      <div><h2>Campaña y sitios</h2><p>Los sitios se cargan <b>una sola vez</b>, con sus coordenadas. Las planillas de cada grupo se cruzan con esta lista por el código o por cualquiera de sus alias. Coordenadas en grados decimales o en Gauss-Krüger (Este, Norte y faja): Kenti convierte.</p></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div><h3>Campaña</h3></div><div class="actions"><button class="btn" id="btn-new" type="button">Campaña nueva</button><button class="btn ghost" id="btn-example" type="button">Cargar ejemplo</button></div></div>
+      <div class="form" id="proy-form"></div>
+    </div>
+    <div class="card-head" style="margin-bottom:-8px"><div><h3>Sitios</h3><div class="sub"><b>Componente</b>: limnología, terrestre o ambos (un punto de río puede tener también aves). <b>Rol</b>: referencia, influencia o control, para el análisis aguas arriba–aguas abajo. Los <b>alias</b> son otras escrituras del mismo sitio, separadas por «;».</div></div><div class="actions"><button class="btn" id="btn-paste-sites">Pegar sitios desde Excel</button><button class="btn primary" id="add-sitios">Agregar sitio</button></div></div>
+    <div class="sheet" id="t-sitios"></div>
+    <div class="sheet-foot"><span id="f-sitios"></span><span class="muted">Lat/lon se completan solas desde Gauss-Krüger si están vacías</span></div>
+    <div class="app-save" id="app-save" hidden><span><b id="save-status"></b> · Kenti guarda cada cambio en <span class="mono" id="save-where"></span></span></div>
+  </section>
+
+  <!-- 2 · PLANILLAS -->
+  <section class="panel" id="p-ent" hidden>
+    <div class="panel-head">
+      <div><h2>Planillas recibidas</h2><p>Una entrega por grupo: el libro que exporta cada módulo de Kenti o una planilla propia con la matriz <b>especie × sitio</b>. Kenti reconoce la hoja por el contenido, toma la fila «Estado del sitio» si existe y, en limnología, la tabla de fisicoquímicos.</p></div>
+      <div class="actions"><label class="btn primary" for="ent-file">Cargar archivo (.xlsx / .csv)</label><input type="file" id="ent-file" accept=".xlsx,.xlsm,.csv,.txt,.tsv" multiple hidden><button class="btn" id="btn-paste-ent">Pegar matriz</button></div>
+    </div>
+    <div class="stats" id="ent-stats"></div>
+    <div id="ent-list" class="ent-list"></div>
+  </section>
+
+  <!-- 3 · ESFUERZO -->
+  <section class="panel" id="p-esf" hidden>
+    <div class="panel-head">
+      <div><h2>Esfuerzo de muestreo</h2><p>Sitio × grupo. Kenti deduce el estado de cada celda desde las planillas; hacé clic en una celda para corregirlo (por ejemplo, declarar <b>no aplicable</b> un grupo en un sitio que no le corresponde). Es la primera tabla del informe.</p></div>
+    </div>
+    <div class="stats" id="esf-stats"></div>
+    <div class="card"><div class="card-head"><div><h3>Limnología</h3></div></div><div class="tbl-wrap" id="esf-lim"></div></div>
+    <div class="card"><div class="card-head"><div><h3>Flora y fauna terrestre</h3></div></div><div class="tbl-wrap" id="esf-ter"></div></div>
+    <p class="foot"><span class="chip ok">relevado</span> el grupo se relevó · <span class="chip mid">no relevado</span> correspondía y no se hizo (hueco llenable) · <span class="chip na">no aplicable</span> el sitio no corresponde al grupo; sale del denominador · <span class="chip bad">sin entrega</span> el grupo todavía no mandó la planilla. Nada se imputa: cada hueco viaja con su motivo.</p>
+  </section>
+
+  <!-- 4 · LIMNOLOGÍA / 5 · TERRESTRE -->
+  <template id="tpl-comp">
+    <div class="panel-head">
+      <div><h2 data-t="title"></h2><p data-t="lead"></p></div>
+      <div class="actions"><span class="vb-label">Índice</span><div class="seg" role="group" data-t="idx"><button type="button" data-i="S" aria-pressed="true">S</button><button type="button" data-i="N" aria-pressed="false">N</button><button type="button" data-i="H" aria-pressed="false">H′</button><button type="button" data-i="D1" aria-pressed="false">1 − D</button><button type="button" data-i="J" aria-pressed="false">J′</button></div></div>
+    </div>
+    <div class="stats" data-t="stats"></div>
+    <div class="card"><div class="card-head"><div><h3 data-t="idx-title">Índice por sitio y grupo</h3><div class="sub">Calculado desde cada matriz, unidades sumadas por sitio. Los huecos llevan su motivo. El promedio viaja con su n; con menos de dos valores no se promedia.</div></div></div><div class="tbl-wrap" data-t="idx-table"></div></div>
+    <div class="grid2">
+      <div class="card"><div class="card-head"><div><h3>Similitud entre sitios</h3><div class="sub" data-t="beta-sub"></div></div><div class="actions"><label class="ctl">Grupo <select data-t="beta-grp"></select></label><label class="ctl">Índice <select data-t="beta-idx"><option value="bc">Bray-Curtis</option><option value="jac">Jaccard</option><option value="mh">Morisita-Horn</option></select></label></div></div><div class="tbl-wrap" data-t="beta"></div></div>
+      <div class="card"><div class="card-head"><div><h3>Agrupamiento UPGMA</h3><div class="sub">Sobre la disimilitud (1 − similitud) del índice elegido.</div></div></div><div class="chart" data-t="dendro"></div></div>
+    </div>
+    <div class="card" data-t="extra"></div>
+  </template>
+  <section class="panel" id="p-lim" hidden></section>
+  <section class="panel" id="p-ter" hidden></section>
+
+  <!-- 6 · CONCORDANCIA -->
+  <section class="panel" id="p-con" hidden>
+    <div class="panel-head">
+      <div><h2>Concordancia entre grupos</h2><p>¿Los grupos ordenan los sitios de la misma manera? Spearman por pares sobre la riqueza, sólo con los sitios que ambos relevaron y nunca por debajo de 5 en común; p corregido por Benjamini-Hochberg. Kendall W sobre los sitios con dato en todos los grupos del componente.</p></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><div class="card-head"><div><h3>Limnología</h3></div></div><div class="tbl-wrap" id="con-lim"></div></div>
+      <div class="card"><div class="card-head"><div><h3>Flora y fauna terrestre</h3></div></div><div class="tbl-wrap" id="con-ter"></div></div>
+    </div>
+    <div class="card"><div class="card-head"><div><h3>Pares no calculados</h3><div class="sub">Con su motivo, para que no parezca que se olvidaron.</div></div></div><div class="tbl-wrap" id="con-skip"></div></div>
+  </section>
+
+  <!-- 7 · MAPA -->
+  <section class="panel" id="p-map" hidden>
+    <div class="panel-head">
+      <div><h2>Mapa de sitios y KMZ</h2><p>Croquis de los sitios con coordenadas. El KMZ abre en Google Earth: una carpeta por componente, un punto por sitio, con el rol como color y una ficha con los grupos relevados y sus índices.</p></div>
+      <div class="actions"><label class="ctl">Etiqueta <select id="map-label"><option value="codigo">Código</option><option value="nombre">Nombre</option></select></label><button class="btn primary" id="btn-kmz">Descargar KMZ</button></div>
+    </div>
+    <div class="card"><div class="chart" id="map-chart"></div></div>
+    <div class="card"><div class="card-head"><div><h3>Sitios con coordenadas</h3></div></div><div class="tbl-wrap" id="map-table"></div></div>
+  </section>
+
+  <!-- 8 · CONTROL -->
+  <section class="panel" id="p-ctl" hidden>
+    <div class="panel-head">
+      <div><h2>Control</h2><p>Qué llegó, cómo se leyó y qué no cierra. Kenti avisa; no corrige.</p></div>
+    </div>
+    <div class="card"><div class="card-head"><div><h3>Avisos</h3></div></div><div class="tbl-wrap" id="ctl-table"></div></div>
+    <div class="card"><div class="card-head"><div><h3>Diccionario de sitios</h3><div class="sub">Cómo escribió cada planilla a cada sitio. Las escrituras no reconocidas se resuelven en la pestaña Planillas.</div></div></div><div class="tbl-wrap" id="ctl-dic"></div></div>
+  </section>
+
+  <footer class="foot-k"><span>Kenti Master v0.1 · consolidado de campaña</span><span>Desarrollado por Kenti</span></footer>
+</div>
+
+<div id="toast" hidden></div>
+<dialog id="dlg-confirm"><h2 id="dlg-title"></h2><p id="dlg-text"></p><div class="row"><button class="btn" id="dlg-no" type="button">Cancelar</button><button class="btn primary" id="dlg-yes" type="button">Confirmar</button></div></dialog>
+<dialog id="dlg-ent">
+  <h2 id="dlg-ent-title">Planilla</h2>
+  <p id="dlg-ent-text"></p>
+  <div class="form" style="margin-bottom:10px">
+    <label>Grupo<select id="ent-grupo"></select></label>
+    <label id="ent-sheet-wrap" hidden>Hoja con la matriz<select id="ent-sheet"></select></label>
+    <label>Medida<input type="text" id="ent-medida" placeholder="individuos, densidad, cobertura…"></label>
+  </div>
+  <textarea id="ent-area" placeholder="Especie	Sitio 1	Sitio 2	Sitio 3&#10;Hyalella sp.	12	0	4&#10;Baetidae	3	8	"></textarea>
+  <div class="err" id="ent-err"></div>
+  <div class="row"><button class="btn" id="ent-cancel" type="button">Cancelar</button><button class="btn primary" id="ent-ok" type="button">Incorporar</button></div>
+</dialog>
+<dialog id="dlg-sites">
+  <h2>Pegar sitios desde Excel</h2>
+  <p>Encabezados reconocidos: <span class="mono">codigo · nombre · componente · rol · ambiente · lat · lon · este · norte · faja · altitud · alias</span>. Los que existan se actualizan por código; los demás se crean.</p>
+  <textarea id="sites-area"></textarea>
+  <div class="err" id="sites-err"></div>
+  <div class="row"><button class="btn" id="sites-cancel" type="button">Cancelar</button><button class="btn primary" id="sites-ok" type="button">Importar</button></div>
+</dialog>
+
+<script>
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const h = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const okNum = v => typeof v === "number" && Number.isFinite(v);
+const num = v => { if (v === "" || v == null) return null; if (typeof v === "number") return Number.isFinite(v) ? v : null; let s = String(v).trim().replace(/\s/g, ""); if (/^-?\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) s = s.replace(/\./g, "").replace(",", "."); else s = s.replace(",", "."); const n = parseFloat(s); return Number.isFinite(n) && /^-?\d*\.?\d+(e-?\d+)?$/i.test(s) ? n : null; };
+const fmt = (v, d = 1) => v == null || !Number.isFinite(v) ? "—" : v.toLocaleString("es-AR", {minimumFractionDigits: d, maximumFractionDigits: d});
+const today = () => new Date().toISOString().slice(0, 10);
+const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-3);
+const sum = a => a.reduce((t, v) => t + v, 0);
+const norm = s => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+const normSite = s => norm(s).replace(/([a-z])0+(?=\d)/g, "$1");
+const VERSION = "0.1", KEY = "kenti-master-v0.1";
+
+/* ---------- Grupos y componentes ---------- */
+const GRUPOS = [
+  {id:"fito", n:"Fitoplancton", c:"lim"}, {id:"fitob", n:"Fitobentos", c:"lim"}, {id:"zoo", n:"Zooplancton", c:"lim"}, {id:"ictio", n:"Ictiología", c:"lim"}, {id:"macro", n:"Macroinvertebrados", c:"lim"},
+  {id:"flora", n:"Flora", c:"ter"}, {id:"herp", n:"Herpetología", c:"ter"}, {id:"orn", n:"Ornitología", c:"ter"}, {id:"masto", n:"Mastozoología", c:"ter"}, {id:"ento", n:"Entomología", c:"ter"},
+];
+const COMP = {lim: {n:"Limnología", short:"limnología"}, ter: {n:"Flora y fauna terrestre", short:"terrestre"}};
+const grupo = id => GRUPOS.find(g => g.id === id);
+const gruposDe = c => GRUPOS.filter(g => g.c === c);
+const OPT = {
+  componente: ["Ambos", "Limnología", "Terrestre"],
+  rol: ["", "Referencia", "Influencia", "Control"],
+  ambiente: ["", "Río", "Arroyo", "Vega", "Laguna", "Salar", "Tolar", "Pajonal", "Bosque", "Otro"],
+  faja: ["", "1", "2", "3", "4", "5", "6", "7"],
+  estado: ["relevado", "no_relevado", "no_aplicable"],
+};
+const ESTADO_L = {relevado:"relevado", no_relevado:"no relevado", no_aplicable:"no aplicable", sin_entrega:"sin entrega"};
+const ESTADO_C = {relevado:"ok", no_relevado:"mid", no_aplicable:"na", sin_entrega:"bad"};
+const FQ_VARS = [["ph", "pH", /^ph\b/], ["temp", "Temperatura", /temp/], ["ce", "Conductividad", /cond|\bce\b|\bec\b/], ["od", "OD", /\bod\b|ox[ií]geno|\bdo\b/], ["tds", "TDS", /tds|s[oó]lidos/], ["turb", "Turbidez", /turb/], ["caudal", "Caudal", /caudal|flow/], ["alt", "Altitud", /altit|elev|msnm/]];
+
+/* ---------- Esquema de sitios ---------- */
+const SCHEMA = {
+  sitios: {nombre:"sitio", cols: [
+    {k:"codigo", l:"Código", t:"text", w:"narrow", ph:"UP-01", cls:"mono"},
+    {k:"nombre", l:"Nombre", t:"text", w:"wide-c"},
+    {k:"componente", l:"Componente", t:"select", o:"componente"},
+    {k:"rol", l:"Rol", t:"select", o:"rol"},
+    {k:"ambiente", l:"Ambiente", t:"select", o:"ambiente"},
+    {k:"lat", l:"Latitud", s:"grados dec.", t:"num", step:"0.00001"},
+    {k:"lon", l:"Longitud", s:"grados dec.", t:"num", step:"0.00001"},
+    {k:"este", l:"Este GK", s:"m", t:"num", step:"0.01"},
+    {k:"norte", l:"Norte GK", s:"m", t:"num", step:"0.01"},
+    {k:"faja", l:"Faja", t:"select", o:"faja", w:"narrow"},
+    {k:"altitud", l:"Altitud", s:"m s.n.m.", t:"num"},
+    {k:"alias", l:"Alias", s:"otras escrituras; con ;", t:"text", w:"wide-c"},
+    {k:"obs", l:"Observaciones", t:"area"},
+  ]},
+};
+const PROY_FIELDS = [
+  {k:"nombre", l:"Proyecto"}, {k:"campania", l:"Campaña", ph:"Otoño 2026, C3…"}, {k:"cliente", l:"Cliente"},
+  {k:"region", l:"Región / provincia"}, {k:"responsable", l:"Administrador"}, {k:"fecha", l:"Fecha", t:"date"},
+  {k:"descripcion", l:"Descripción", t:"area", wide:true},
+];
+
+/* ---------- Gauss-Krüger argentino (fajas 1–7, POSGAR/WGS84) → lat/lon ---------- */
+function gkToLatLon(E, N, faja){
+  faja = +faja; if (!okNum(E) || !okNum(N) || !(faja >= 1 && faja <= 7)) return null;
+  const a = 6378137, f = 1 / 298.257223563, k0 = 1, lon0 = (-75 + 3 * faja) * Math.PI / 180;
+  // Origen de latitud en el polo sur (EPSG 5343–5349 / 22181–22187): el Norte se mide desde el polo, no desde el ecuador.
+  const n = f / (2 - f), A = a / (1 + n) * (1 + n * n / 4 + n ** 4 / 64);
+  const x = E - (faja * 1e6 + 500000), y = N - A * Math.PI / 2;
+  const xi = y / (k0 * A), eta = x / (k0 * A);
+  const b1 = n / 2 - 2 * n * n / 3 + 37 * n ** 3 / 96, b2 = n * n / 48 + n ** 3 / 15, b3 = 17 * n ** 3 / 480;
+  let xip = xi - (b1 * Math.sin(2 * xi) * Math.cosh(2 * eta) + b2 * Math.sin(4 * xi) * Math.cosh(4 * eta) + b3 * Math.sin(6 * xi) * Math.cosh(6 * eta));
+  let etap = eta - (b1 * Math.cos(2 * xi) * Math.sinh(2 * eta) + b2 * Math.cos(4 * xi) * Math.sinh(4 * eta) + b3 * Math.cos(6 * xi) * Math.sinh(6 * eta));
+  const chi = Math.asin(Math.sin(xip) / Math.cosh(etap));
+  const d1 = 2 * n - 2 * n * n / 3 - 2 * n ** 3, d2 = 7 * n * n / 3 - 8 * n ** 3 / 5, d3 = 56 * n ** 3 / 15;
+  const lat = chi + d1 * Math.sin(2 * chi) + d2 * Math.sin(4 * chi) + d3 * Math.sin(6 * chi);
+  const lon = lon0 + Math.atan2(Math.sinh(etap), Math.cos(xip));
+  return {lat: lat * 180 / Math.PI, lon: lon * 180 / Math.PI};
+}
+function siteLatLon(s){
+  const lat = num(s.lat), lon = num(s.lon); if (lat != null && lon != null) return {lat, lon, from:"dec"};
+  const g = gkToLatLon(num(s.este), num(s.norte), s.faja); return g ? {...g, from:"gk"} : null;
+}
+
+/* ---------- Estado ---------- */
+let state = null, appInfo = null, saveT = null;
+function validState(s){ return s && typeof s === "object" && Array.isArray(s.sitios) && s.proyecto; }
+function normalize(s){ if (!Array.isArray(s.sitios)) s.sitios = []; if (!Array.isArray(s.entregas)) s.entregas = []; if (!s.proyecto) s.proyecto = {}; if (!s.esfuerzo) s.esfuerzo = {}; if (!s.alias) s.alias = {}; return s; }
+function loadLocal(){ try { const s = JSON.parse(localStorage.getItem(KEY)); if (validState(s)) return normalize(s); } catch(e){} return null; }
+function save(){
+  clearTimeout(saveT);
+  saveT = setTimeout(() => {
+    const body = JSON.stringify(state);
+    if (!appInfo){ try { localStorage.setItem(KEY, body); } catch(e){ toast("No se pudo guardar en el navegador (¿demasiados datos?). Exportá a Excel para no perder nada."); } return; }
+    fetch("api/datos", {method:"PUT", headers:{"Content-Type":"application/json", "X-Kenti":"1"}, body}).then(r => { $("#save-status").textContent = r.ok ? "Guardado" : "No se pudo guardar"; }).catch(() => { $("#save-status").textContent = "No se pudo guardar"; });
+  }, 250);
+}
+function markEdited(){ if (state.ejemplo){ state.ejemplo = false; exChip(); } }
+function exChip(){ $("#ex-chip").hidden = !state.ejemplo; $("#ex-note").hidden = !state.ejemplo; $("#meta-proy").textContent = [state.proyecto.nombre, state.proyecto.campania].filter(Boolean).join(" · ") || "Consolidado de campaña"; }
+
+/* ---------- Diccionario de sitios ---------- */
+function siteKeys(s){ const ks = [s.codigo, s.nombre, ...String(s.alias || "").split(";")].map(normSite).filter(Boolean); return [...new Set(ks)]; }
+function matchSite(label){
+  const k = normSite(label); if (!k) return null;
+  if (state.alias[k]) return state.sitios.find(s => s.id === state.alias[k]) || null;
+  for (const s of state.sitios) if (siteKeys(s).includes(k)) return s;
+  return null;
+}
+const siteOf = s => state.sitios.find(x => x.id === s);
+const siteLabel = s => s ? (s.codigo || s.nombre || "?") : "?";
+function sitesFor(c){ return state.sitios.filter(s => c === "lim" ? s.componente !== "Terrestre" : s.componente !== "Limnología"); }
+
+/* ---------- Lectura de .xlsx en el navegador (sin bibliotecas) ---------- */
+async function unzipEntries(buf){
+  const u8 = new Uint8Array(buf), dv = new DataView(buf); let eocd = -1;
+  for (let i = u8.length - 22; i >= Math.max(0, u8.length - 65557); i--) if (dv.getUint32(i, true) === 0x06054b50){ eocd = i; break; }
+  if (eocd < 0) throw new Error("no es un archivo .xlsx válido");
+  const count = dv.getUint16(eocd + 10, true); let p = dv.getUint32(eocd + 16, true); const dec = new TextDecoder(), out = {};
+  for (let k = 0; k < count; k++){ if (dv.getUint32(p, true) !== 0x02014b50) break; const method = dv.getUint16(p + 10, true), csize = dv.getUint32(p + 20, true), nlen = dv.getUint16(p + 28, true), elen = dv.getUint16(p + 30, true), clen = dv.getUint16(p + 32, true), lo = dv.getUint32(p + 42, true); out[dec.decode(u8.subarray(p + 46, p + 46 + nlen))] = {method, lo, csize}; p += 46 + nlen + elen + clen; }
+  const read = async name => { const e = out[name]; if (!e) return null; const start = e.lo + 30 + dv.getUint16(e.lo + 26, true) + dv.getUint16(e.lo + 28, true); const data = u8.subarray(start, start + e.csize); if (e.method === 0) return dec.decode(data); if (e.method !== 8 || typeof DecompressionStream === "undefined") throw new Error("compresión no soportada"); return dec.decode(await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer()); };
+  return {names: Object.keys(out), read};
+}
+async function readXlsx(buf){
+  const z = await unzipEntries(buf), xml = t => new DOMParser().parseFromString(t, "application/xml"), byTag = (node, tag) => [...node.getElementsByTagName("*")].filter(el => el.localName === tag);
+  const wb = xml(await z.read("xl/workbook.xml") || ""), rels = xml(await z.read("xl/_rels/workbook.xml.rels") || "<Relationships/>"); const relMap = {}; byTag(rels, "Relationship").forEach(r => relMap[r.getAttribute("Id")] = r.getAttribute("Target"));
+  const shared = []; const ss = await z.read("xl/sharedStrings.xml"); if (ss) byTag(xml(ss), "si").forEach(si => shared.push(byTag(si, "t").map(t => t.textContent).join("")));
+  const sheets = byTag(wb, "sheet").map(sh => { const rid = [...sh.attributes].find(a => a.localName === "id" && a.name !== "sheetId"); let target = relMap[rid ? rid.value : ""] || ""; target = target.startsWith("/") ? target.slice(1) : "xl/" + target.replace(/^\.\//, ""); return {name: sh.getAttribute("name"), path: target}; });
+  const colIdx = ref => { const m = /^([A-Z]+)/.exec(ref || ""); if (!m) return null; let n = 0; for (const ch of m[1]) n = n * 26 + ch.charCodeAt(0) - 64; return n - 1; };
+  for (const sh of sheets){
+    const doc = xml(await z.read(sh.path) || "<worksheet/>"), grid = [];
+    byTag(doc, "row").forEach((row, ri) => { const r = (+row.getAttribute("r") || ri + 1) - 1, cells = []; let next = 0;
+      byTag(row, "c").forEach(c => { const ci = colIdx(c.getAttribute("r")) ?? next; next = ci + 1; const t = c.getAttribute("t"), v = byTag(c, "v")[0]?.textContent ?? ""; let val = "";
+        if (t === "s") val = shared[+v] ?? ""; else if (t === "inlineStr") val = byTag(c, "t").map(x => x.textContent).join(""); else if (t === "str") val = v; else if (t === "b") val = v === "1" ? "1" : "0"; else if (t === "e") val = ""; else val = v === "" ? "" : +v;
+        cells[ci] = val; });
+      grid[r] = cells; });
+    sh.rows = Array.from(grid, r => (r || []).map(c => c ?? ""));
+  }
+  return sheets;
+}
+function csvToRows(text){
+  const lines = text.replace(/^﻿/, "").replace(/\r/g, "").split("\n"); const head = lines.find(l => l.trim()) || ""; const d = head.includes("\t") ? "\t" : head.includes(";") ? ";" : ",";
+  return lines.map(l => { const out = []; let cur = "", q = false; for (let i = 0; i < l.length; i++){ const ch = l[i]; if (q){ if (ch === '"' && l[i + 1] === '"'){ cur += '"'; i++; } else if (ch === '"') q = false; else cur += ch; } else if (ch === '"') q = true; else if (ch === d){ out.push(cur); cur = ""; } else cur += ch; } out.push(cur); return out.map(c => c.trim()); }).filter(r => r.some(c => c !== ""));
+}
+
+/* ---------- Reconocer la matriz especie × sitio en una hoja ---------- */
+const ATTR_RE = /^(famil|clase|orden|c[oó]digo|cod\b|omnidia|grupo|forma|origen|estatus|uicn|cites|planear|uso|nombre com|autor|obs)/i;
+const TOTAL_RE = /^(total|suma|riqueza|abundancia|n\b|s\b|shannon|simpson|pielou|margalef|menhinick)/i;
+const ESTADO_RE = /estado del sitio|^estado$/i;
+function parseMatrix(rows){
+  // encabezado: la fila con más celdas de texto seguida de filas con números
+  const R = Array.from(rows, r => (r || []).map(c => typeof c === "number" ? c : String(c ?? "").trim()));
+  let best = -1, bestScore = -1;
+  for (let i = 0; i < Math.min(R.length, 30); i++){
+    const r = R[i]; const txt = r.filter(c => c !== "" && num(c) == null).length; if (txt < 2) continue;
+    let numeric = 0; for (let j = i + 1; j < Math.min(R.length, i + 12); j++) numeric += R[j].slice(1).filter(c => num(c) != null).length;
+    const score = txt * 1000 + Math.min(numeric, 999); if (numeric > 0 && score > bestScore){ bestScore = score; best = i; }
+  }
+  if (best < 0) throw new Error("no encuentro una fila de encabezados con sitios seguida de valores");
+  const head = R[best].map(c => String(c ?? "").trim());
+  let taxCol = head.findIndex(c => c !== ""); if (taxCol < 0) taxCol = 0;
+  const attrCols = [], siteCols = [];
+  head.forEach((c, j) => { if (j <= taxCol) return; if (!c) return; if (ATTR_RE.test(c)) attrCols.push(j); else if (/total|γ|gamma/i.test(c)) return; else siteCols.push(j); });
+  if (!siteCols.length) throw new Error("no encuentro columnas de sitios en el encabezado");
+  const taxa = [], values = [], attrs = []; let estado = null; const warnings = [];
+  for (let i = best + 1; i < R.length; i++){
+    const r = R[i]; const name = String(r[taxCol] ?? "").trim(); if (!name && !r.some(c => c !== "")) continue;
+    if (ESTADO_RE.test(name)){ estado = siteCols.map(j => { const v = norm(r[j]); return /noaplic/.test(v) ? "no_aplicable" : /norelev/.test(v) ? "no_relevado" : /relev/.test(v) ? "relevado" : ""; }); continue; }
+    if (!name || TOTAL_RE.test(name)) continue;
+    const vals = siteCols.map(j => { const c = r[j]; if (c === "" || c == null) return 0; if (typeof c === "number") return c; const s = String(c).trim().toLowerCase(); if (["x", "p", "presente", "+", "si", "sí"].includes(s)) return 1; if (["s/d", "sd", "na", "n/a", "-", "—"].includes(s)) return null; const n = num(c); if (n == null){ warnings.push(`«${c}» en ${name} / ${head[j]} no es un número: se toma como sin dato`); return null; } return n; });
+    if (vals.every(v => v === 0 || v == null) && !vals.some(v => v === 0)) { /* fila sin datos */ }
+    taxa.push(name); values.push(vals); attrs.push(Object.fromEntries(attrCols.map(j => [head[j], String(r[j] ?? "").trim()])));
+  }
+  if (!taxa.length) throw new Error("la matriz no tiene filas de taxones");
+  const dup = taxa.filter((t, i) => taxa.findIndex(x => norm(x) === norm(t)) !== i); if (dup.length) warnings.push(`taxones repetidos: ${[...new Set(dup)].join(", ")} (se cuentan como filas distintas)`);
+  return {sites: siteCols.map(j => head[j]), taxa, values, attrs, estado, warnings, headerRow: best};
+}
+function parseFq(rows){
+  const R = Array.from(rows, r => (r || []).map(c => typeof c === "number" ? c : String(c ?? "").trim()));
+  for (let i = 0; i < Math.min(R.length, 30); i++){
+    const head = R[i].map(c => String(c ?? "")); const cols = [];
+    head.forEach((c, j) => { if (j === 0 || !c) return; for (const [id, , re] of FQ_VARS) if (re.test(c.toLowerCase())){ cols.push({j, id, label: c}); break; } });
+    if (cols.length >= 2){
+      const data = []; for (let k = i + 1; k < R.length; k++){ const r = R[k]; const site = String(r[0] ?? "").trim(); if (!site) continue; if (TOTAL_RE.test(site) || ESTADO_RE.test(site)) continue; const row = {site}; let any = false; cols.forEach(c => { const v = num(r[c.j]); row[c.id] = v; if (v != null) any = true; }); if (any) data.push(row); }
+      if (data.length) return {vars: cols.map(c => ({id: c.id, label: c.label})), data};
+    }
+  }
+  return null;
+}
+function scoreSheet(sh){ try { const m = parseMatrix(sh.rows); return m.taxa.length * m.sites.length; } catch(e){ return 0; } }
+
+/* ---------- Entregas ---------- */
+function addEntrega(e){ const i = state.entregas.findIndex(x => x.grupo === e.grupo); const prev = i >= 0 ? state.entregas[i] : null; if (i >= 0) state.entregas[i] = e; else state.entregas.push(e); return prev; }
+function entregaDe(gid){ return state.entregas.find(e => e.grupo === gid); }
+function guessGrupo(name){ const n = norm(name); const map = [["fitob", /fitob|diatom|perif|bento/], ["fito", /fitop|algas/], ["zoo", /zoop/], ["ictio", /ictio|pec|fish/], ["macro", /macro|invert/], ["flora", /flora|botan|veget/], ["herp", /herp|anfib|rept/], ["orn", /orn|ave/], ["masto", /mast|mamif/], ["ento", /ento|insect|artrop/]]; for (const [id, re] of map) if (re.test(n)) return id; return ""; }
+// Estado de sitio × grupo: prioridad manual > fila estado > presencia en la matriz > sin entrega
+function estadoDe(site, gid){
+  const man = (state.esfuerzo[site.id] || {})[gid]; if (man) return {e: man, src:"manual"};
+  const en = entregaDe(gid); if (!en) return {e:"sin_entrega", src:"auto"};
+  const col = en.siteMap.findIndex(id => id === site.id);
+  if (col < 0) return {e:"no_relevado", src:"auto"};
+  const row = en.matrix.estado && en.matrix.estado[col]; if (row) return {e: row, src:"planilla"};
+  return {e:"relevado", src:"auto"};
+}
+// Vector de abundancias de un sitio en un grupo (suma si el sitio aparece en varias columnas)
+function vectorDe(site, gid){
+  const en = entregaDe(gid); if (!en) return null; const cols = en.siteMap.map((id, j) => id === site.id ? j : -1).filter(j => j >= 0); if (!cols.length) return null;
+  const v = en.matrix.values.map(row => { let t = 0, any = false; for (const j of cols){ if (row[j] != null){ t += row[j]; any = true; } } return any ? t : null; });
+  return {v, hasNA: v.some(x => x == null), en};
+}
+
+/* ---------- Índices ---------- */
+function alpha(vals){
+  const v = vals.filter(x => x != null && x > 0), N = sum(v), S = v.length;
+  if (!S || N <= 0) return {S, N, H: null, D1: null, D: null, J: null};
+  const p = v.map(x => x / N), H = -sum(p.map(x => x * Math.log(x))), D = sum(p.map(x => x * x));
+  return {S, N, H, D1: 1 - D, D, J: S > 1 ? H / Math.log(S) : null};
+}
+function brayCurtis(a, b){ let mn = 0, t = 0; for (let i = 0; i < a.length; i++){ mn += Math.min(a[i], b[i]); t += a[i] + b[i]; } return t ? 2 * mn / t : null; }
+function jaccard(a, b){ let s = 0, u = 0; for (let i = 0; i < a.length; i++){ const x = a[i] > 0, y = b[i] > 0; if (x && y) s++; if (x || y) u++; } return u ? s / u : null; }
+function morisitaHorn(a, b){ const Na = sum(a), Nb = sum(b); if (!Na || !Nb) return null; let xy = 0, da = 0, db = 0; for (let i = 0; i < a.length; i++){ xy += a[i] * b[i]; da += a[i] * a[i]; db += b[i] * b[i]; } return 2 * xy / ((da / (Na * Na) + db / (Nb * Nb)) * Na * Nb); }
+const SIM = {bc: {n:"Bray-Curtis", f: brayCurtis}, jac: {n:"Jaccard", f: jaccard}, mh: {n:"Morisita-Horn", f: morisitaHorn}};
+function upgma(names, D){
+  let clusters = names.map((n, i) => ({members:[i], label:n, height:0, children:null})); const d = D.map(r => r.slice());
+  let idx = names.map((_, i) => i);
+  while (clusters.length > 1){
+    let bi = 0, bj = 1, bd = Infinity;
+    for (let i = 0; i < clusters.length; i++) for (let j = i + 1; j < clusters.length; j++){ const v = dist(clusters[i], clusters[j]); if (v < bd){ bd = v; bi = i; bj = j; } }
+    const merged = {members: clusters[bi].members.concat(clusters[bj].members), height: bd / 2, children: [clusters[bi], clusters[bj]]};
+    clusters = clusters.filter((_, k) => k !== bi && k !== bj); clusters.push(merged);
+  }
+  function dist(a, b){ let t = 0, n = 0; for (const i of a.members) for (const j of b.members){ const v = d[i][j]; if (v != null){ t += v; n++; } } return n ? t / n : 1; }
+  return clusters[0];
+}
+// Spearman con p por aproximación t; BH
+function rank(v){ const idx = v.map((x, i) => [x, i]).sort((a, b) => a[0] - b[0]); const r = new Array(v.length); let i = 0; while (i < idx.length){ let j = i; while (j + 1 < idx.length && idx[j + 1][0] === idx[i][0]) j++; const rk = (i + j) / 2 + 1; for (let k = i; k <= j; k++) r[idx[k][1]] = rk; i = j + 1; } return r; }
+function pearson(x, y){ const n = x.length, mx = sum(x) / n, my = sum(y) / n; let sxy = 0, sxx = 0, syy = 0; for (let i = 0; i < n; i++){ sxy += (x[i] - mx) * (y[i] - my); sxx += (x[i] - mx) ** 2; syy += (y[i] - my) ** 2; } return sxx && syy ? sxy / Math.sqrt(sxx * syy) : null; }
+function spearman(x, y){ const r = pearson(rank(x), rank(y)); if (r == null) return null; const n = x.length; const t = Math.abs(r) >= 1 ? Infinity : r * Math.sqrt((n - 2) / (1 - r * r)); return {rho: r, n, p: tPvalue(t, n - 2)}; }
+function lgamma(z){ const g = 7, c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7]; if (z < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * z)) - lgamma(1 - z); z -= 1; let x = c[0]; for (let i = 1; i < g + 2; i++) x += c[i] / (z + i); const t = z + g + 0.5; return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x); }
+function betacf(a, b, x){ const MAXIT = 200, EPS = 3e-12, FPMIN = 1e-300; let qab = a + b, qap = a + 1, qam = a - 1, c = 1, d = 1 - qab * x / qap; if (Math.abs(d) < FPMIN) d = FPMIN; d = 1 / d; let hh = d; for (let m = 1; m <= MAXIT; m++){ const m2 = 2 * m; let aa = m * (b - m) * x / ((qam + m2) * (a + m2)); d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN; c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN; d = 1 / d; hh *= d * c; aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2)); d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN; c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN; d = 1 / d; const del = d * c; hh *= del; if (Math.abs(del - 1) < EPS) break; } return hh; }
+function ibeta(a, b, x){ if (x <= 0) return 0; if (x >= 1) return 1; const bt = Math.exp(lgamma(a + b) - lgamma(a) - lgamma(b) + a * Math.log(x) + b * Math.log(1 - x)); return x < (a + 1) / (a + b + 2) ? bt * betacf(a, b, x) / a : 1 - bt * betacf(b, a, 1 - x) / b; }
+function tPvalue(t, df){ if (df <= 0) return null; if (!Number.isFinite(t)) return 0; return ibeta(df / 2, 0.5, df / (df + t * t)); }
+function benjaminiHochberg(ps){ const m = ps.length, idx = ps.map((p, i) => [p, i]).sort((a, b) => a[0] - b[0]); const out = new Array(m); let prev = 1; for (let k = m - 1; k >= 0; k--){ const q = Math.min(prev, idx[k][0] * m / (k + 1)); out[idx[k][1]] = q; prev = q; } return out; }
+function kendallW(mat){ // mat: filas = jueces (grupos), columnas = sitios
+  const m = mat.length, n = mat[0].length; if (m < 2 || n < 3) return null; const R = mat.map(rank); const Rj = Array.from({length: n}, (_, j) => sum(R.map(r => r[j]))); const Rbar = sum(Rj) / n; const S = sum(Rj.map(r => (r - Rbar) ** 2));
+  let T = 0; for (const r of R){ const cnt = {}; r.forEach(v => cnt[v] = (cnt[v] || 0) + 1); T += sum(Object.values(cnt).map(t => t ** 3 - t)); }
+  const W = 12 * S / (m * m * (n ** 3 - n) - m * T); const chi2 = m * (n - 1) * W; return {W, n, m, chi2, df: n - 1, p: chi2Pvalue(chi2, n - 1)};
+}
+function chi2Pvalue(x, k){ if (x <= 0) return 1; return 1 - gammainc(k / 2, x / 2); }
+function gammainc(a, x){ if (x < a + 1){ let ap = a, s = 1 / a, del = s; for (let n = 1; n < 300; n++){ ap++; del *= x / ap; s += del; if (Math.abs(del) < Math.abs(s) * 3e-12) break; } return s * Math.exp(-x + a * Math.log(x) - lgamma(a)); } let b = x + 1 - a, c = 1 / 1e-300, d = 1 / b, hh = d; for (let i = 1; i < 300; i++){ const an = -i * (i - a); b += 2; d = an * d + b; if (Math.abs(d) < 1e-300) d = 1e-300; c = b + an / c; if (Math.abs(c) < 1e-300) c = 1e-300; d = 1 / d; const del = d * c; hh *= del; if (Math.abs(del - 1) < 3e-12) break; } return 1 - Math.exp(-x + a * Math.log(x) - lgamma(a)) * hh; }
+
+/* ---------- Ejemplo: campaña simulada con huecos a propósito ---------- */
+function ejemplo(){
+  let seed = 7; const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+  const sitios = [
+    {codigo:"UP-01", nombre:"Río Grande aguas arriba", componente:"Ambos", rol:"Referencia", ambiente:"Río", este:3431262, norte:7392851, faja:"3", altitud:3920, alias:"UP 01; up01; RG arriba"},
+    {codigo:"UP-02", nombre:"Río Grande en planta", componente:"Ambos", rol:"Influencia", ambiente:"Río", este:3433800, norte:7390100, faja:"3", altitud:3905, alias:"UP-2"},
+    {codigo:"UP-03", nombre:"Río Grande aguas abajo", componente:"Limnología", rol:"Influencia", ambiente:"Río", este:3436900, norte:7387400, faja:"3", altitud:3890, alias:""},
+    {codigo:"UP-04", nombre:"Laguna del salar", componente:"Limnología", rol:"Control", ambiente:"Laguna", lat:-23.61, lon:-66.79, altitud:3880, alias:"Laguna"},
+    {codigo:"UP-05", nombre:"Vega Loma Alta", componente:"Ambos", rol:"Influencia", ambiente:"Vega", lat:-23.545, lon:-66.87, altitud:3960, alias:"Vega LA"},
+    {codigo:"UP-06", nombre:"Tolar del acceso", componente:"Terrestre", rol:"Influencia", ambiente:"Tolar", lat:-23.58, lon:-66.83, altitud:3990, alias:""},
+    {codigo:"UP-07", nombre:"Pajonal control", componente:"Terrestre", rol:"Control", ambiente:"Pajonal", lat:-23.50, lon:-66.95, altitud:4080, alias:"Control pajonal"},
+    {codigo:"UP-08", nombre:"Bosque de queñoa", componente:"Terrestre", rol:"Referencia", ambiente:"Bosque", lat:-23.47, lon:-66.90, altitud:4210, alias:""},
+  ].map(s => ({id:"s-" + s.codigo.toLowerCase().replace("-", ""), obs:"", ...s}));
+  const TAXA = {
+    macro: ["Hyalella sp.", "Baetidae", "Chironomidae", "Simuliidae", "Elmidae", "Hydroptilidae", "Oligochaeta", "Physidae", "Leptoceridae", "Corixidae", "Dytiscidae", "Tipulidae"],
+    fitob: ["Achnanthidium minutissimum", "Navicula cryptocephala", "Nitzschia palea", "Gomphonema parvulum", "Cocconeis placentula", "Fragilaria capucina", "Cymbella affinis", "Denticula kuetzingii", "Rhopalodia gibba", "Surirella ovalis"],
+    fito: ["Oscillatoria sp.", "Chlorella sp.", "Scenedesmus quadricauda", "Cyclotella meneghiniana", "Euglena sp.", "Synedra ulna", "Pediastrum boryanum", "Anabaena sp."],
+    zoo: ["Boeckella gracilipes", "Daphnia pulex", "Keratella cochlearis", "Brachionus plicatilis", "Alona sp.", "Cyclopoida ind.", "Lecane luna"],
+    orn: ["Phoenicoparrus andinus", "Chloephaga melanoptera", "Lophonetta specularioides", "Geositta punensis", "Phrygilus unicolor", "Muscisaxicola rufivertex", "Vanellus resplendens", "Metriopelia aymara", "Sicalis uropygialis", "Asthenes modesta", "Cinclodes atacamensis"],
+    masto: ["Lama guanicoe", "Vicugna vicugna", "Lycalopex culpaeus", "Ctenomys opimus", "Phyllotis xanthopygus", "Abrocoma cinerea", "Lagidium viscacia", "Puma concolor"],
+    herp: ["Liolaemus pulcherrimus", "Liolaemus multicolor", "Phymaturus sp.", "Rhinella spinulosa", "Telmatobius sp."],
+    ento: ["Formicidae msp1", "Tenebrionidae msp1", "Tenebrionidae msp2", "Carabidae msp1", "Acrididae msp1", "Lycosidae msp1", "Curculionidae msp1", "Muscidae msp1", "Apidae msp1"],
+    flora: ["Deyeuxia eminens", "Oxychloe andina", "Parastrephia quadrangularis", "Festuca orthophylla", "Fabiana densa", "Baccharis boliviensis", "Polylepis tomentella", "Azorella compacta", "Adesmia horrida", "Jarava leptostachya", "Werneria pygmaea", "Distichia muscoides"],
+  };
+  // qué sitios relevó cada grupo (con escrituras distintas a propósito) y un gradiente: la influencia baja la riqueza en limnología
+  const spec = {
+    macro: {sites:["UP-01", "UP-02", "UP 03", "Laguna"], medida:"individuos", estado:["relevado", "relevado", "relevado", "no aplicable"]},
+    fitob: {sites:["up01", "UP-2", "UP-03"], medida:"valvas (‰)"},
+    fito: {sites:["UP-01", "UP-02", "UP-03", "UP-04"], medida:"ind/mL"},
+    zoo: {sites:["UP-01", "UP-02", "UP-04"], medida:"ind/L"},
+    orn: {sites:["RG arriba", "UP-02", "Vega LA", "UP-06", "Control pajonal", "UP-08"], medida:"individuos"},
+    masto: {sites:["UP-01", "UP-05", "UP-06", "UP-07", "UP-08"], medida:"registros"},
+    herp: {sites:["UP-05", "UP-06", "UP-07", "UP-08"], medida:"individuos"},
+    ento: {sites:["UP-05", "UP-06", "UP-07"], medida:"individuos"},
+    flora: {sites:["UP-01", "UP-05", "UP-06", "UP-07", "UP-08", "Sitio LV"], medida:"cobertura (%)"},
+  };
+  const impacto = {"UP-02": 0.55, "UP-03": 0.7, "UP-06": 0.85, "UP-05": 0.9};
+  const entregas = [];
+  for (const [gid, sp] of Object.entries(spec)){
+    const taxa = TAXA[gid]; const values = taxa.map((t, i) => sp.sites.map(lbl => { const code = matchLabelToCode(lbl); const f = impacto[code] ?? 1; const p = Math.max(0, 1 - i / taxa.length * 1.3) * f; if (rnd() > p) return 0; const v = Math.round(rnd() * 40 * f + 1); return gid === "fitob" ? v * 10 : v; }));
+    // laguna en macro sin dato
+    const m = {sites: sp.sites, taxa, values, attrs: taxa.map(() => ({})), estado: sp.estado ? sp.estado.map(e => e.replace(" ", "_")) : null, warnings: [], headerRow: 0};
+    if (sp.estado) m.values.forEach(row => { row[3] = 0; });
+    const siteMap = sp.sites.map(lbl => { const code = matchLabelToCode(lbl); const s = sitios.find(x => x.codigo === code); return s ? s.id : null; });
+    const fq = gid === "fito" ? {vars: [{id:"ph", label:"pH"}, {id:"ce", label:"Conductividad (µS/cm)"}, {id:"od", label:"OD (mg/L)"}, {id:"temp", label:"Temperatura (°C)"}], data: sp.sites.map((s, i) => ({site: s, ph: +(7.6 + i * 0.3).toFixed(1), ce: [820, 1450, 2100, 38000][i], od: +(7.8 - i * 0.6).toFixed(1), temp: +(9 + i * 1.5).toFixed(1)}))} : null;
+    entregas.push({id: uid(), grupo: gid, archivo: `Kenti_${grupo(gid).n}_ejemplo.xlsx`, hoja: "Tabla de datos", fecha: today(), medida: sp.medida, matrix: m, siteMap, fq, fqMap: fq ? fq.data.map(r => { const s = sitios.find(x => x.codigo === matchLabelToCode(r.site)); return s ? s.id : null; }) : null});
+  }
+  function matchLabelToCode(lbl){ const k = norm(lbl); for (const s of sitios){ if ([s.codigo, s.nombre, ...s.alias.split(";")].map(norm).includes(k)) return s.codigo; } return null; }
+  return {version: VERSION, ejemplo: true,
+    proyecto: {nombre:"Monitoreo Salar del Nevado", campania:"Campaña 3 · otoño 2026", cliente:"Litio Andino S.A. (ficticio)", region:"Puna de Salta", responsable:"Kenti Master", fecha:"2026-04-20", descripcion:"Ejemplo ficticio: 8 sitios (4 de río y laguna, 4 terrestres, 3 compartidos), 9 grupos con planilla e ictiología sin entrega. Las escrituras de los sitios difieren entre planillas a propósito, y hay un sitio («Sitio LV») que no está en la lista."},
+    sitios, entregas, esfuerzo: {}, alias: {}};
+}
+function vacio(){ const s = ejemplo(); s.ejemplo = false; s.sitios = []; s.entregas = []; s.proyecto = {}; s.esfuerzo = {}; s.alias = {}; return s; }
+
+/* ---------- Tabla de sitios (editable) ---------- */
+function opts(list, cur){ const o = ['<option value=""></option>']; for (const v of list) if (v !== "") o.push(`<option value="${h(v)}"${v === cur ? " selected" : ""}>${h(v)}</option>`); if (cur && !list.includes(cur)) o.push(`<option value="${h(cur)}" selected>${h(cur)}</option>`); return o.join(""); }
+function cellHtml(col, r){
+  const v = r[col.k] ?? "";
+  switch (col.t){
+    case "select": return `<select data-k="${col.k}">${opts(OPT[col.o], v)}</select>`;
+    case "num": return `<input class="in-num" type="number" step="${col.step || "1"}" data-k="${col.k}" value="${h(v)}" inputmode="decimal">`;
+    case "area": return `<textarea rows="1" data-k="${col.k}">${h(v)}</textarea>`;
+    default: return `<input type="text" class="${col.cls || ""}" data-k="${col.k}" value="${h(v)}" placeholder="${h(col.ph || "")}">`;
+  }
+}
+function renderTable(coll){
+  const sc = SCHEMA[coll], host = $("#t-" + coll), rows = state[coll];
+  if (!rows.length){ host.innerHTML = `<div class="empty">Sin sitios. Agregalos a mano o pegalos desde Excel.</div>`; $("#f-" + coll).textContent = ""; return; }
+  let html = `<table class="grid"><thead><tr>${sc.cols.map(c => `<th>${h(c.l)}${c.s ? `<small>${h(c.s)}</small>` : ""}</th>`).join("")}<th>lat/lon</th><th></th></tr></thead><tbody>`;
+  for (const r of rows){ const ll = siteLatLon(r); html += `<tr data-id="${r.id}">` + sc.cols.map(c => `<td class="${c.w || ""}">${cellHtml(c, r)}</td>`).join("") + `<td class="calc" data-ll>${ll ? `<small>${ll.from === "gk" ? "GK→ " : ""}${fmt(ll.lat, 5)}, ${fmt(ll.lon, 5)}</small>` : '<span class="chip na">sin coordenadas</span>'}</td><td class="rmc"><button class="rm" type="button" title="Quitar" aria-label="Quitar">×</button></td></tr>`; }
+  host.innerHTML = html + "</tbody></table>";
+  $("#f-" + coll).textContent = `${rows.length} ${rows.length === 1 ? "sitio" : "sitios"} · ${rows.filter(s => siteLatLon(s)).length} con coordenadas`;
+  host.onclick = e => { const b = e.target.closest(".rm"); if (!b) return; const id = b.closest("tr").dataset.id, i = rows.findIndex(x => x.id === id), removed = rows[i]; rows.splice(i, 1); markEdited(); save(); remapAll(); renderTable(coll); toast("Sitio quitado", () => { rows.splice(Math.min(i, rows.length), 0, removed); save(); remapAll(); renderTable(coll); }); };
+  const onEdit = e => { const el = e.target, k = el.dataset.k; if (!k) return; const tr = el.closest("tr"), r = rows.find(x => x.id === tr.dataset.id); if (!r) return; r[k] = el.type === "number" ? (el.value === "" ? "" : num(el.value)) : el.value; markEdited(); save();
+    if (e.type === "change"){ const ll = siteLatLon(r); tr.querySelector("[data-ll]").innerHTML = ll ? `<small>${ll.from === "gk" ? "GK→ " : ""}${fmt(ll.lat, 5)}, ${fmt(ll.lon, 5)}</small>` : '<span class="chip na">sin coordenadas</span>'; if (["codigo", "nombre", "alias"].includes(k)) remapAll(); } };
+  host.oninput = onEdit; host.onchange = onEdit;
+}
+function addSite(){ const r = {id: uid(), componente: "Ambos", faja: state.sitios[state.sitios.length - 1]?.faja || ""}; state.sitios.push(r); markEdited(); save(); renderTable("sitios"); const host = $("#t-sitios"); host.scrollTop = host.scrollHeight; host.querySelector("tbody tr:last-child input")?.focus(); }
+function renderProy(){
+  const p = state.proyecto;
+  $("#proy-form").innerHTML = PROY_FIELDS.map(f => { const v = p[f.k] ?? ""; const inp = f.t === "area" ? `<textarea data-k="${f.k}">${h(v)}</textarea>` : f.t === "date" ? `<input type="date" data-k="${f.k}" value="${h(v)}">` : `<input type="text" data-k="${f.k}" value="${h(v)}" placeholder="${h(f.ph || "")}">`; return `<label class="${f.wide ? "wide" : ""}">${h(f.l)}${inp}</label>`; }).join("");
+  $("#proy-form").oninput = e => { const k = e.target.dataset.k; if (!k) return; p[k] = e.target.value; markEdited(); save(); exChip(); };
+}
+// Vuelve a cruzar todas las planillas con la lista de sitios (respeta las asignaciones manuales guardadas en state.alias)
+function remapAll(){ for (const en of state.entregas){ en.siteMap = en.matrix.sites.map(lbl => { const s = matchSite(lbl); return s ? s.id : null; }); if (en.fq) en.fqMap = en.fq.data.map(r => { const s = matchSite(r.site); return s ? s.id : null; }); } save(); }
+
+/* ---------- Planillas ---------- */
+function renderEnt(){
+  const es = state.entregas; $("#ent-n").hidden = !es.length; $("#ent-n").textContent = es.length;
+  const unm = es.reduce((t, e) => t + e.siteMap.filter(x => !x).length, 0);
+  stats("#ent-stats", [["Planillas", es.length, `de ${GRUPOS.length} grupos`], ["Sin entrega", GRUPOS.length - es.length], ["Columnas sin sitio", unm, unm ? "resolver abajo" : ""], ["Taxones", sum(es.map(e => e.matrix.taxa.length))]]);
+  if (!es.length){ $("#ent-list").innerHTML = `<div class="empty">Todavía no hay planillas. Cargá los libros que exporta cada módulo de Kenti, o cualquier Excel con una matriz especie × sitio.</div>`; return; }
+  const order = GRUPOS.map(g => g.id);
+  $("#ent-list").innerHTML = es.slice().sort((a, b) => order.indexOf(a.grupo) - order.indexOf(b.grupo)).map(en => {
+    const g = grupo(en.grupo), m = en.matrix; const unmatched = en.siteMap.map((id, j) => id ? null : j).filter(j => j != null);
+    const cols = m.sites.map((lbl, j) => { const id = en.siteMap[j]; const est = m.estado ? m.estado[j] : ""; return `<div class="ent-col ${id ? "" : "unm"}"><span class="mono">${h(lbl)}</span> → <select data-en="${en.id}" data-col="${j}"><option value="">— sin sitio —</option>${state.sitios.map(s => `<option value="${s.id}"${s.id === id ? " selected" : ""}>${h(siteLabel(s))}${s.nombre && s.codigo ? " · " + h(s.nombre) : ""}</option>`).join("")}</select>${est ? `<span class="chip ${ESTADO_C[est]}">${ESTADO_L[est]}</span>` : ""}</div>`; }).join("");
+    return `<div class="card ent"><div class="card-head"><div><h3>${h(g.n)} <span class="chip soft">${COMP[g.c].short}</span></h3><div class="sub"><span class="mono">${h(en.archivo)}</span>${en.hoja ? ` · hoja «${h(en.hoja)}»` : ""} · ${m.taxa.length} taxones × ${m.sites.length} sitios · medida: ${h(en.medida || "sin declarar")}${en.fq ? ` · fisicoquímicos: ${en.fq.vars.map(v => v.label).join(", ")}` : ""}${m.estado ? " · trae fila de estado" : ""}</div></div><div class="actions"><button class="btn sm" data-view="${en.id}">Ver matriz</button><button class="btn sm ghost" data-del="${en.id}">Quitar</button></div></div>
+      ${unmatched.length ? `<div class="note" style="margin-bottom:10px"><span><b>${unmatched.length}</b> columna(s) sin sitio reconocido: elegí el sitio en la lista o agregá esa escritura a los alias del sitio.</span></div>` : ""}
+      <div class="ent-cols">${cols}</div>
+      ${m.warnings.length ? `<p class="foot" style="margin-top:8px">${m.warnings.map(h).join(" · ")}</p>` : ""}
+      <div class="tbl-wrap" id="mat-${en.id}" hidden></div></div>`;
+  }).join("");
+  $("#ent-list").onchange = e => { const sel = e.target; if (!sel.dataset.en) return; const en = es.find(x => x.id === sel.dataset.en); const j = +sel.dataset.col; en.siteMap[j] = sel.value || null; const k = normSite(en.matrix.sites[j]); if (sel.value) state.alias[k] = sel.value; else delete state.alias[k]; markEdited(); save(); renderEnt(); };
+  $("#ent-list").onclick = e => {
+    const v = e.target.closest("[data-view]"), d = e.target.closest("[data-del]");
+    if (v){ const en = es.find(x => x.id === v.dataset.view), host = $("#mat-" + en.id); if (!host.hidden){ host.hidden = true; return; } const m = en.matrix; host.innerHTML = `<table class="res"><thead><tr><th class="l">Taxón</th>${m.sites.map(s => `<th>${h(s)}</th>`).join("")}</tr></thead><tbody>${m.taxa.map((t, i) => `<tr><td class="l"><i>${h(t)}</i></td>${m.values[i].map(x => `<td>${x == null ? '<small>s/d</small>' : x === 0 ? '<small class="muted">0</small>' : fmt(x, Number.isInteger(x) ? 0 : 2)}</td>`).join("")}</tr>`).join("")}</tbody></table>`; host.hidden = false; }
+    if (d){ const i = es.findIndex(x => x.id === d.dataset.del), removed = es[i]; es.splice(i, 1); markEdited(); save(); renderEnt(); toast(`Planilla de ${grupo(removed.grupo).n} quitada`, () => { es.splice(i, 0, removed); save(); renderEnt(); }); }
+  };
+}
+let pendingSheets = null;
+function openEntDialog({title, text, sheets, rows, archivo, grupoGuess}){
+  const d = $("#dlg-ent"); pendingSheets = sheets || null; d.dataset.archivo = archivo || "pegado";
+  $("#dlg-ent-title").textContent = title; $("#dlg-ent-text").textContent = text;
+  $("#ent-grupo").innerHTML = `<option value="">— elegir grupo —</option>` + GRUPOS.map(g => `<option value="${g.id}"${g.id === grupoGuess ? " selected" : ""}>${g.n} (${COMP[g.c].short})${entregaDe(g.id) ? " · reemplaza la actual" : ""}</option>`).join("");
+  const wrap = $("#ent-sheet-wrap"), sel = $("#ent-sheet"); $("#ent-err").textContent = ""; $("#ent-medida").value = "";
+  if (sheets){ const scored = sheets.map((sh, i) => ({i, s: scoreSheet(sh)})); const best = scored.slice().sort((a, b) => b.s - a.s)[0]; sel.innerHTML = sheets.map((sh, i) => `<option value="${i}"${i === best.i ? " selected" : ""}>${h(sh.name)}${scored[i].s ? "" : " (sin matriz)"}</option>`).join(""); wrap.hidden = false; $("#ent-area").value = sheets[best.i].rows.map(r => r.join("\t")).join("\n"); $("#ent-area").readOnly = true; sel.onchange = () => { $("#ent-area").value = sheets[+sel.value].rows.map(r => r.join("\t")).join("\n"); }; }
+  else { wrap.hidden = true; $("#ent-area").value = rows ? rows.map(r => r.join("\t")).join("\n") : ""; $("#ent-area").readOnly = false; }
+  // medida desde metadatos si el libro la trae
+  if (sheets){ for (const sh of sheets) for (const r of sh.rows){ const k = norm(r[0]); if (k === "medida" || k === "unidad") $("#ent-medida").value = String(r[1] ?? ""); if (k === "grupo" && !grupoGuess){ const gg = guessGrupo(String(r[1] ?? "")); if (gg) $("#ent-grupo").value = gg; } } }
+  d.showModal();
+}
+$("#ent-cancel").onclick = () => $("#dlg-ent").close();
+$("#ent-ok").onclick = () => {
+  const gid = $("#ent-grupo").value; if (!gid){ $("#ent-err").textContent = "Elegí el grupo."; return; }
+  try {
+    let rows, hoja = "", fq = null;
+    if (pendingSheets){ const sh = pendingSheets[+$("#ent-sheet").value]; rows = sh.rows; hoja = sh.name; for (const s of pendingSheets){ const f = parseFq(s.rows); if (f){ fq = f; break; } } }
+    else { rows = csvToRows($("#ent-area").value); fq = null; }
+    const matrix = parseMatrix(rows);
+    const en = {id: uid(), grupo: gid, archivo: $("#dlg-ent").dataset.archivo, hoja, fecha: today(), medida: $("#ent-medida").value.trim(), matrix, fq: grupo(gid).c === "lim" ? fq : null};
+    en.siteMap = matrix.sites.map(lbl => { const s = matchSite(lbl); return s ? s.id : null; }); if (en.fq) en.fqMap = en.fq.data.map(r => { const s = matchSite(r.site); return s ? s.id : null; });
+    const prev = addEntrega(en); $("#dlg-ent").close(); markEdited(); save(); renderEnt();
+    const unm = en.siteMap.filter(x => !x).length;
+    toast(`${grupo(gid).n}: ${matrix.taxa.length} taxones × ${matrix.sites.length} sitios${prev ? " (reemplaza la anterior)" : ""}${unm ? ` · ${unm} columna(s) sin sitio` : ""}${en.fq ? " · con fisicoquímicos" : ""}`);
+  } catch(e){ $("#ent-err").textContent = e.message; }
+};
+$("#ent-file").onchange = async e => {
+  const files = [...e.target.files]; e.target.value = "";
+  for (const f of files){
+    try {
+      if (/\.xls$/i.test(f.name)) throw new Error("los .xls antiguos no se pueden leer: guardalo como .xlsx");
+      if (/\.xlsx$|\.xlsm$/i.test(f.name)){ const sheets = await readXlsx(await f.arrayBuffer()); await new Promise(res => { openEntDialog({title: `Cargar ${f.name}`, text: "Kenti eligió la hoja que parece la matriz; podés cambiarla. Confirmá el grupo.", sheets, archivo: f.name, grupoGuess: guessGrupo(f.name)}); const d = $("#dlg-ent"); d.addEventListener("close", res, {once: true}); }); }
+      else { const rows = csvToRows(await f.text()); await new Promise(res => { openEntDialog({title: `Cargar ${f.name}`, text: "Confirmá el grupo.", rows, archivo: f.name, grupoGuess: guessGrupo(f.name)}); $("#dlg-ent").addEventListener("close", res, {once: true}); }); }
+    } catch(err){ toast(`${f.name}: ${err.message}`); }
+  }
+};
+$("#btn-paste-ent").onclick = () => openEntDialog({title: "Pegar matriz especie × sitio", text: "Primera fila: «Especie» y los sitios. Una fila por taxón. Celda vacía = 0; «s/d» = sin dato; «x» = presente.", archivo: "pegado"});
+
+/* ---------- Esfuerzo ---------- */
+function renderEsf(){
+  const counts = {relevado:0, no_relevado:0, no_aplicable:0, sin_entrega:0};
+  for (const c of ["lim", "ter"]){
+    const gs = gruposDe(c), ss = sitesFor(c);
+    if (!ss.length){ $("#esf-" + c).innerHTML = `<p class="foot">Sin sitios de ${COMP[c].short}.</p>`; continue; }
+    let html = `<table class="res esf"><thead><tr><th class="l">Sitio</th>${gs.map(g => `<th>${h(g.n)}${entregaDe(g.id) ? "" : '<br><small>sin entrega</small>'}</th>`).join("")}<th>Grupos</th></tr></thead><tbody>`;
+    for (const s of ss){ let n = 0; const cells = gs.map(g => { const {e, src} = estadoDe(s, g.id); counts[e]++; if (e === "relevado") n++; return `<td><button type="button" class="chip ${ESTADO_C[e]} esf-btn" data-s="${s.id}" data-g="${g.id}" title="${src === "manual" ? "Corregido a mano · clic para cambiar" : src === "planilla" ? "Declarado en la planilla · clic para cambiar" : "Deducido · clic para cambiar"}">${ESTADO_L[e]}${src === "manual" ? " ✎" : ""}</button></td>`; }).join("");
+      html += `<tr><td class="l"><b>${h(siteLabel(s))}</b> <small>${h(s.nombre || "")}</small></td>${cells}<td>${n}/${gs.length}</td></tr>`; }
+    html += `<tr class="pooled"><td class="l">Sitios relevados</td>${gs.map(g => `<td>${ss.filter(s => estadoDe(s, g.id).e === "relevado").length}/${ss.filter(s => estadoDe(s, g.id).e !== "no_aplicable").length}</td>`).join("")}<td></td></tr>`;
+    $("#esf-" + c).innerHTML = html + "</tbody></table>";
+  }
+  stats("#esf-stats", [["Relevados", counts.relevado], ["No relevados", counts.no_relevado, "huecos llenables"], ["No aplicables", counts.no_aplicable], ["Sin entrega", counts.sin_entrega]]);
+  $$(".esf-btn").forEach(b => b.onclick = () => { const s = b.dataset.s, g = b.dataset.g; const cur = estadoDe(siteOf(s), g); const cycle = ["relevado", "no_relevado", "no_aplicable"]; const man = (state.esfuerzo[s] || {})[g];
+    state.esfuerzo[s] = state.esfuerzo[s] || {}; if (man && cycle.indexOf(man) === cycle.length - 1){ delete state.esfuerzo[s][g]; } else state.esfuerzo[s][g] = cycle[(cycle.indexOf(cur.e) + 1) % cycle.length];
+    markEdited(); save(); renderEsf(); });
+}
+
+/* ---------- Paneles por componente ---------- */
+const compUI = {lim: {idx:"S", grp:"", sim:"bc"}, ter: {idx:"S", grp:"", sim:"bc"}};
+function initComp(c){
+  const host = $("#p-" + c); host.innerHTML = ""; host.appendChild($("#tpl-comp").content.cloneNode(true));
+  const t = k => host.querySelector(`[data-t="${k}"]`);
+  t("title").textContent = COMP[c].n; t("lead").textContent = c === "lim" ? "Fitoplancton, fitobentos, zooplancton, ictiología y macroinvertebrados, sobre los sitios de agua. Los fisicoquímicos que traigan las planillas se cruzan con la riqueza de cada grupo." : "Flora, herpetología, ornitología, mastozoología y entomología, sobre los sitios terrestres.";
+  t("idx").onclick = e => { const b = e.target.closest("button"); if (!b) return; compUI[c].idx = b.dataset.i; renderComp(c); };
+  t("beta-grp").onchange = e => { compUI[c].grp = e.target.value; renderComp(c); }; t("beta-idx").onchange = e => { compUI[c].sim = e.target.value; renderComp(c); };
+}
+const IDX_L = {S:"Riqueza (S)", N:"Abundancia (N)", H:"Shannon (H′, ln)", D1:"Simpson (1 − D)", J:"Pielou (J′)"};
+function cellIdx(site, gid, idx){
+  const {e} = estadoDe(site, gid); if (e !== "relevado") return {v: null, why: ESTADO_L[e], cls: ESTADO_C[e]};
+  const vec = vectorDe(site, gid); if (!vec) return {v: null, why: "sin columna", cls: "mid"};
+  const a = alpha(vec.v); const v = a[idx]; return {v, why: v == null ? (idx === "J" ? "S = 1" : "sin dato") : "", na: vec.hasNA};
+}
+function renderComp(c){
+  const host = $("#p-" + c); if (!host.children.length) initComp(c); const t = k => host.querySelector(`[data-t="${k}"]`);
+  const ui = compUI[c], gs = gruposDe(c), ss = sitesFor(c), idx = ui.idx;
+  $$("button", t("idx")).forEach(b => b.setAttribute("aria-pressed", b.dataset.i === idx));
+  const con = gs.filter(g => entregaDe(g.id));
+  const taxTot = sum(con.map(g => entregaDe(g.id).matrix.taxa.length));
+  stats(t("stats"), [["Sitios", ss.length], ["Grupos con planilla", con.length, `de ${gs.length}`], ["Taxones", taxTot], ["Celdas relevadas", sum(ss.map(s => gs.filter(g => estadoDe(s, g.id).e === "relevado").length))]]);
+  t("idx-title").textContent = IDX_L[idx] + " por sitio y grupo";
+  if (!ss.length){ t("idx-table").innerHTML = `<p class="foot">Sin sitios de ${COMP[c].short}.</p>`; t("beta").innerHTML = ""; t("dendro").innerHTML = ""; t("extra").innerHTML = ""; return; }
+  const d = idx === "S" ? 0 : idx === "N" ? 0 : 3;
+  let html = `<table class="res"><thead><tr><th class="l">Sitio</th><th>Rol</th>${gs.map(g => `<th>${h(g.n)}</th>`).join("")}<th>Promedio <small>(n)</small></th></tr></thead><tbody>`;
+  const colVals = gs.map(() => []);
+  for (const s of ss){
+    const cells = gs.map((g, k) => { const r = cellIdx(s, g.id, idx); if (r.v != null) colVals[k].push(r.v); return `<td>${r.v != null ? `<b>${fmt(r.v, d)}</b>${r.na ? ' <span class="warn" title="La columna tiene celdas sin dato: el valor es un mínimo">s/d</span>' : ""}` : `<span class="chip ${r.cls || "na"}">${h(r.why)}</span>`}</td>`; });
+    const vals = gs.map(g => cellIdx(s, g.id, idx).v).filter(v => v != null);
+    html += `<tr><td class="l"><b>${h(siteLabel(s))}</b> <small>${h(s.nombre || "")}</small></td><td><small>${h(s.rol || "—")}</small></td>${cells.join("")}<td>${vals.length >= 2 ? `${fmt(sum(vals) / vals.length, d || 1)} <small>(${vals.length}/${gs.filter(g => estadoDe(s, g.id).e !== "no_aplicable").length})</small>` : '<small class="muted">n &lt; 2</small>'}</td></tr>`;
+  }
+  html += `<tr class="pooled"><td class="l">Promedio por grupo</td><td></td>${colVals.map(v => `<td>${v.length >= 2 ? `${fmt(sum(v) / v.length, d || 1)} <small>(${v.length})</small>` : "—"}</td>`).join("")}<td></td></tr>`;
+  if (idx === "S") html += `<tr class="pooled"><td class="l">Riqueza total (γ)</td><td></td>${gs.map(g => { const en = entregaDe(g.id); if (!en) return "<td>—</td>"; const present = en.matrix.values.filter((row, i) => row.some((x, j) => x > 0 && en.siteMap[j])).length; return `<td>${present}</td>`; }).join("")}<td></td></tr>`;
+  t("idx-table").innerHTML = html + "</tbody></table>";
+  // beta
+  const sel = t("beta-grp"); const cur = ui.grp && con.some(g => g.id === ui.grp) ? ui.grp : (con[0]?.id || ""); ui.grp = cur;
+  sel.innerHTML = con.map(g => `<option value="${g.id}"${g.id === cur ? " selected" : ""}>${g.n}</option>`).join("") + (con.length > 1 ? `<option value="__all"${cur === "__all" ? " selected" : ""}>Todos los grupos (presencia)</option>` : "");
+  t("beta-idx").value = ui.sim;
+  const bres = betaFor(c, cur, ui.sim);
+  if (!bres){ t("beta").innerHTML = `<p class="foot">Hacen falta al menos dos sitios relevados en el grupo.</p>`; t("beta-sub").textContent = ""; t("dendro").innerHTML = ""; }
+  else {
+    const {names, M, note} = bres; t("beta-sub").textContent = note;
+    t("beta").innerHTML = `<table class="res hm"><thead><tr><th></th>${names.map(n => `<th>${h(n)}</th>`).join("")}</tr></thead><tbody>${names.map((n, i) => `<tr><td class="l"><b>${h(n)}</b></td>${names.map((_, j) => { const v = M[i][j]; const a = v == null ? 0 : v; return `<td style="background:rgba(61,107,28,${(0.75 * a).toFixed(2)});${a > 0.5 ? "color:#fff" : ""}">${i === j ? "" : fmt(v, 2)}</td>`; }).join("")}</tr>`).join("")}</tbody></table>`;
+    t("dendro").innerHTML = dendrogram(names, M);
+  }
+  // extra: fisicoquímicos (lim) o resumen por rol (ter)
+  t("extra").innerHTML = c === "lim" ? fqPanel(ss, gs) : rolPanel(ss, gs, idx);
+}
+function betaFor(c, gid, sim){
+  const ss = sitesFor(c); let names = [], vecs = [], note = "";
+  if (gid === "__all"){
+    const con = gruposDe(c).filter(g => entregaDe(g.id)); const rows = [];
+    for (const g of con){ const en = entregaDe(g.id); en.matrix.taxa.forEach((_, i) => rows.push([g.id, i])); }
+    for (const s of ss){ if (!con.some(g => estadoDe(s, g.id).e === "relevado")) continue; const v = []; for (const g of con){ const vec = estadoDe(s, g.id).e === "relevado" ? vectorDe(s, g.id) : null; const n = entregaDe(g.id).matrix.taxa.length; for (let i = 0; i < n; i++) v.push(vec && vec.v[i] > 0 ? 1 : 0); } names.push(siteLabel(s)); vecs.push(v); }
+    note = `Presencia/ausencia de todos los taxones de ${con.length} grupos juntos; un grupo no relevado en un sitio cuenta como ausencias. Se calcula con ${SIM[sim].n}${sim !== "jac" ? " sobre 0/1" : ""}.`;
+  } else {
+    const en = entregaDe(gid); if (!en) return null;
+    for (const s of ss){ if (estadoDe(s, gid).e !== "relevado") continue; const vec = vectorDe(s, gid); if (!vec) continue; names.push(siteLabel(s)); vecs.push(vec.v.map(x => x == null ? 0 : x)); }
+    note = `${grupo(gid).n}, medida: ${en.medida || "sin declarar"}. Sólo sitios relevados; las celdas sin dato cuentan como 0.`;
+  }
+  if (names.length < 2) return null;
+  const f = SIM[sim].f; const M = names.map((_, i) => names.map((_, j) => i === j ? 1 : f(vecs[i], vecs[j])));
+  return {names, M, note};
+}
+function dendrogram(names, M){
+  const D = M.map(r => r.map(v => v == null ? 1 : 1 - v)); const tree = upgma(names, D);
+  const leaves = []; (function walk(n){ if (!n.children){ leaves.push(n); return; } n.children.forEach(walk); })(tree);
+  const W = 520, H = 22 * leaves.length + 54, L = 150, R = 20, maxH = Math.max(0.05, tree.height); const X = hgt => L + (W - L - R) * (1 - hgt / maxH), Y = i => 20 + i * 22;
+  const pos = new Map(leaves.map((n, i) => [n, i])); let svg = "";
+  (function draw(n){ if (!n.children){ const y = Y(pos.get(n)); svg += `<text x="${X(0) + 6}" y="${y + 4}" font-size="12" fill="var(--ink)">${h(n.label)}</text>`; return y; } const ys = n.children.map(draw); const x = X(n.height); n.children.forEach((ch, k) => { const xc = X(ch.children ? ch.height : 0); svg += `<line x1="${x}" x2="${xc}" y1="${ys[k]}" y2="${ys[k]}" stroke="var(--ink-2)" stroke-width="1.5"/>`; }); svg += `<line x1="${x}" x2="${x}" y1="${Math.min(...ys)}" y2="${Math.max(...ys)}" stroke="var(--ink-2)" stroke-width="1.5"/>`; return (Math.min(...ys) + Math.max(...ys)) / 2; })(tree);
+  let axis = ""; for (let k = 0; k <= 4; k++){ const v = maxH * k / 4; axis += `<line x1="${X(v)}" x2="${X(v)}" y1="${H - 32}" y2="${H - 28}" stroke="var(--muted)"/><text x="${X(v)}" y="${H - 16}" text-anchor="middle" font-size="10" fill="var(--muted)">${fmt(v, 2)}</text>`; }
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Dendrograma UPGMA">${svg}<line x1="${X(maxH)}" x2="${X(0)}" y1="${H - 30}" y2="${H - 30}" stroke="var(--muted)"/>${axis}<text x="${(X(maxH) + X(0)) / 2}" y="${H - 3}" text-anchor="middle" font-size="10" fill="var(--muted)">disimilitud (1 − similitud)</text></svg>`;
+}
+function fqTable(){ // sitio → {var: valor} unificando entregas (si dos cargaron lo mismo, se muestran las dos)
+  const out = new Map(); const vars = new Map();
+  for (const en of state.entregas){ if (!en.fq) continue; en.fq.vars.forEach(v => { if (!vars.has(v.id)) vars.set(v.id, v.label); }); en.fq.data.forEach((row, i) => { const sid = en.fqMap[i]; if (!sid) return; if (!out.has(sid)) out.set(sid, {}); const o = out.get(sid); for (const v of en.fq.vars){ if (row[v.id] == null) continue; (o[v.id] = o[v.id] || []).push({v: row[v.id], g: en.grupo}); } }); }
+  return {out, vars};
+}
+function fqPanel(ss, gs){
+  const {out, vars} = fqTable(); if (!vars.size) return `<div class="card-head"><div><h3>Fisicoquímicos</h3><div class="sub">Ninguna planilla de limnología trajo tabla de fisicoquímicos (pH, conductividad, OD, TDS, temperatura…).</div></div></div>`;
+  const V = [...vars.entries()];
+  let html = `<div class="card-head"><div><h3>Fisicoquímicos por sitio</h3><div class="sub">Tomados de las planillas que los trajeron. Si dos grupos cargaron la misma variable, se ven los dos valores.</div></div></div><div class="tbl-wrap"><table class="res"><thead><tr><th class="l">Sitio</th>${V.map(([, l]) => `<th>${h(l)}</th>`).join("")}</tr></thead><tbody>`;
+  for (const s of ss){ const o = out.get(s.id); html += `<tr><td class="l"><b>${h(siteLabel(s))}</b></td>${V.map(([id]) => `<td>${o && o[id] ? o[id].map(x => `${fmt(x.v, 2)}<small title="${h(grupo(x.g).n)}"> ${grupo(x.g).n.slice(0, 4).toLowerCase()}</small>`).join("<br>") : "<small>—</small>"}</td>`).join("")}</tr>`; }
+  html += "</tbody></table></div>";
+  // Spearman S de cada grupo vs cada variable (n ≥ 5)
+  const rows = [];
+  for (const g of gs){ if (!entregaDe(g.id)) continue; for (const [id, l] of V){ const x = [], y = []; for (const s of ss){ const r = cellIdx(s, g.id, "S"); const o = out.get(s.id); if (r.v == null || !o || !o[id]) continue; x.push(o[id][0].v); y.push(r.v); } if (x.length >= 5){ const sp = spearman(x, y); rows.push([g.n, l, sp.rho, sp.n, sp.p]); } else rows.push([g.n, l, null, x.length, null]); } }
+  const ok = rows.filter(r => r[4] != null), skip = rows.filter(r => r[4] == null);
+  if (ok.length){ const q = benjaminiHochberg(ok.map(r => r[4])); ok.forEach((r, k) => r.push(q[k]));
+    html += `<h4 style="margin:16px 0 6px;font-size:13px">Riqueza vs. fisicoquímicos (Spearman, n ≥ 5)</h4><div class="tbl-wrap"><table class="res"><thead><tr><th class="l">Grupo</th><th class="l">Variable</th><th>ρ</th><th>n</th><th>p</th><th>p (BH)</th></tr></thead><tbody>${ok.map(r => `<tr><td class="l">${h(r[0])}</td><td class="l">${h(r[1])}</td><td><b>${fmt(r[2], 2)}</b></td><td>${r[3]}</td><td>${fmt(r[4], 3)}</td><td>${r[5] < 0.05 ? `<span class="chip ok">${fmt(r[5], 3)}</span>` : fmt(r[5], 3)}</td></tr>`).join("")}</tbody></table></div>`; }
+  if (skip.length) html += `<p class="foot" style="margin-top:10px">Riqueza vs. fisicoquímicos: ${ok.length ? "no se calcularon" : "no se calcula ninguna correlación"} ${skip.length} par(es) grupo × variable por tener menos de 5 sitios con ambos datos (${[...new Set(skip.map(r => r[0]))].map(g => `${g}: n = ${skip.find(r => r[0] === g)[3]}`).join(" · ")}).</p>`;
+  return html;
+}
+function rolPanel(ss, gs, idx){
+  const roles = ["Referencia", "Influencia", "Control"].filter(r => ss.some(s => s.rol === r)); if (!roles.length) return `<div class="card-head"><div><h3>Por rol del sitio</h3><div class="sub">Asigná rol (referencia / influencia / control) a los sitios para comparar.</div></div></div>`;
+  let html = `<div class="card-head"><div><h3>${IDX_L[idx]} por rol del sitio</h3><div class="sub">Promedio de los sitios de cada rol, con su n. Referencia e influencia son la base del análisis aguas arriba–aguas abajo.</div></div></div><div class="tbl-wrap"><table class="res"><thead><tr><th class="l">Rol</th><th>Sitios</th>${gs.map(g => `<th>${h(g.n)}</th>`).join("")}</tr></thead><tbody>`;
+  for (const r of roles){ const sr = ss.filter(s => s.rol === r); html += `<tr><td class="l"><b>${r}</b></td><td>${sr.length}</td>${gs.map(g => { const v = sr.map(s => cellIdx(s, g.id, idx).v).filter(x => x != null); return `<td>${v.length ? `${fmt(sum(v) / v.length, idx === "S" || idx === "N" ? 1 : 3)} <small>(${v.length})</small>` : "—"}</td>`; }).join("")}</tr>`; }
+  return html + "</tbody></table></div>";
+}
+
+/* ---------- Concordancia ---------- */
+function renderCon(){
+  const skipped = [];
+  for (const c of ["lim", "ter"]){
+    const gs = gruposDe(c).filter(g => entregaDe(g.id)), ss = sitesFor(c); const pairs = [];
+    for (let i = 0; i < gs.length; i++) for (let j = i + 1; j < gs.length; j++){
+      const x = [], y = []; for (const s of ss){ const a = cellIdx(s, gs[i].id, "S"), b = cellIdx(s, gs[j].id, "S"); if (a.v != null && b.v != null){ x.push(a.v); y.push(b.v); } }
+      if (x.length < 5){ skipped.push([COMP[c].short, `${gs[i].n} × ${gs[j].n}`, `${x.length} sitio(s) en común, mínimo 5`]); continue; }
+      const sp = spearman(x, y); if (!sp){ skipped.push([COMP[c].short, `${gs[i].n} × ${gs[j].n}`, "sin varianza en la riqueza"]); continue; }
+      pairs.push({a: gs[i].n, b: gs[j].n, ...sp});
+    }
+    const q = benjaminiHochberg(pairs.map(p => p.p)); pairs.forEach((p, k) => p.q = q[k]);
+    let html = pairs.length ? `<table class="res"><thead><tr><th class="l">Par</th><th>ρ</th><th>n</th><th>p</th><th>p (BH)</th></tr></thead><tbody>${pairs.map(p => `<tr><td class="l">${h(p.a)} × ${h(p.b)}</td><td><b>${fmt(p.rho, 2)}</b></td><td>${p.n}</td><td>${fmt(p.p, 3)}</td><td>${p.q < 0.05 ? `<span class="chip ok">${fmt(p.q, 3)}</span>` : fmt(p.q, 3)}</td></tr>`).join("")}</tbody></table>` : `<p class="foot">Ningún par con 5 sitios en común.</p>`;
+    // Kendall W
+    let common = ss.filter(s => gs.every(g => cellIdx(s, g.id, "S").v != null)); let used = gs.slice(), note = "";
+    if (common.length < 3 && gs.length > 2){ const worst = gs.slice().sort((a, b) => ss.filter(s => cellIdx(s, a.id, "S").v != null).length - ss.filter(s => cellIdx(s, b.id, "S").v != null).length)[0]; used = gs.filter(g => g !== worst); common = ss.filter(s => used.every(g => cellIdx(s, g.id, "S").v != null)); note = ` Se dejó afuera ${worst.n}, que es el grupo que menos sitios aporta.`; }
+    if (common.length >= 3 && used.length >= 2){ const W = kendallW(used.map(g => common.map(s => cellIdx(s, g.id, "S").v))); html += `<p class="foot" style="margin-top:10px"><b>Kendall W = ${fmt(W.W, 3)}</b> sobre ${W.n} sitios y ${W.m} grupos (χ² = ${fmt(W.chi2, 2)}, gl = ${W.df}, p = ${fmt(W.p, 3)}).${note}</p>`; }
+    else html += `<p class="foot" style="margin-top:10px">Kendall W: no hay 3 sitios con dato en todos los grupos.${note}</p>`;
+    $("#con-" + c).innerHTML = html;
+  }
+  $("#con-skip").innerHTML = skipped.length ? `<table class="res"><thead><tr><th class="l">Componente</th><th class="l">Par</th><th class="l">Motivo</th></tr></thead><tbody>${skipped.map(r => `<tr><td class="l">${h(r[0])}</td><td class="l">${h(r[1])}</td><td class="l">${h(r[2])}</td></tr>`).join("")}</tbody></table>` : `<p class="foot">Todos los pares se calcularon.</p>`;
+}
+
+/* ---------- Mapa ---------- */
+const ROL_COLOR = {Referencia:"var(--accent)", Influencia:"var(--comet)", Control:"var(--s1)", "":"var(--muted)"};
+const ROL_KML = {Referencia:"ff1c6b3d", Influencia:"ff1d38b0", Control:"ffd6782a", "":"ff707876"};
+function renderMap(){
+  const pts = state.sitios.map(s => ({s, ll: siteLatLon(s)})).filter(p => p.ll); const lab = $("#map-label").value;
+  if (pts.length < 1){ $("#map-chart").innerHTML = `<p class="foot">Ningún sitio tiene coordenadas.</p>`; $("#map-table").innerHTML = ""; return; }
+  const lats = pts.map(p => p.ll.lat), lons = pts.map(p => p.ll.lon); let minLa = Math.min(...lats), maxLa = Math.max(...lats), minLo = Math.min(...lons), maxLo = Math.max(...lons);
+  const midLa = (minLa + maxLa) / 2, kx = Math.cos(midLa * Math.PI / 180); const spanLa = Math.max(0.01, maxLa - minLa), spanLo = Math.max(0.01, (maxLo - minLo) * kx); const span = Math.max(spanLa, spanLo) * 1.25;
+  const W = 720, H = 480, m = 40; const X = lo => m + (W - 2 * m) * (((lo - (minLo + maxLo) / 2) * kx) / span + 0.5), Y = la => m + (H - 2 * m) * (0.5 - (la - midLa) / span);
+  let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Croquis de sitios"><rect x="${m}" y="${m}" width="${W - 2 * m}" height="${H - 2 * m}" fill="var(--surface-2)" stroke="var(--line)"/>`;
+  // grilla
+  const step = niceStep(span / 4); for (let la = Math.ceil((midLa - span / 2) / step) * step; la <= midLa + span / 2; la += step){ const y = Y(la); if (y > m && y < H - m) svg += `<line x1="${m}" x2="${W - m}" y1="${y}" y2="${y}" stroke="var(--line)"/><text x="${m - 4}" y="${y + 3}" text-anchor="end" font-size="10" fill="var(--muted)">${la.toFixed(2)}°</text>`; }
+  for (let lo = Math.ceil((minLo + maxLo) / 2 / step - span / kx / 2 / step) * step; lo <= (minLo + maxLo) / 2 + span / kx / 2; lo += step){ const x = X(lo); if (x > m && x < W - m) svg += `<line y1="${m}" y2="${H - m}" x1="${x}" x2="${x}" stroke="var(--line)"/><text x="${x}" y="${H - m + 12}" text-anchor="middle" font-size="10" fill="var(--muted)">${lo.toFixed(2)}°</text>`; }
+  // escala
+  const km = niceStep(span * 111 / 4); const px = (W - 2 * m) * (km / 111) / span; svg += `<line x1="${W - m - px - 10}" x2="${W - m - 10}" y1="${H - m - 12}" y2="${H - m - 12}" stroke="var(--ink)" stroke-width="2"/><text x="${W - m - 10 - px / 2}" y="${H - m - 18}" text-anchor="middle" font-size="10" fill="var(--ink)">${km} km</text>`;
+  for (const {s, ll} of pts){ const x = X(ll.lon), y = Y(ll.lat); const shape = s.componente === "Terrestre" ? `<rect x="${x - 6}" y="${y - 6}" width="12" height="12" fill="${ROL_COLOR[s.rol || ""]}" stroke="var(--surface)" stroke-width="1.5"/>` : s.componente === "Limnología" ? `<circle cx="${x}" cy="${y}" r="7" fill="${ROL_COLOR[s.rol || ""]}" stroke="var(--surface)" stroke-width="1.5"/>` : `<path d="M${x} ${y - 8}L${x + 8} ${y}L${x} ${y + 8}L${x - 8} ${y}Z" fill="${ROL_COLOR[s.rol || ""]}" stroke="var(--surface)" stroke-width="1.5"/>`; svg += `<g>${shape}<title>${h(s.codigo)} · ${h(s.nombre || "")} · ${h(s.rol || "sin rol")}</title><text x="${x + 10}" y="${y + 4}" font-size="11" fill="var(--ink)">${h(lab === "nombre" ? (s.nombre || s.codigo) : (s.codigo || s.nombre))}</text></g>`; }
+  svg += `</svg><p class="foot" style="margin-top:6px">Color = rol: <span style="color:${ROL_COLOR.Referencia}">●</span> referencia <span style="color:${ROL_COLOR.Influencia}">●</span> influencia <span style="color:${ROL_COLOR.Control}">●</span> control · forma = componente: ● limnología ■ terrestre ◆ ambos. Croquis equirectangular, sin fondo cartográfico: para el mapa real, el KMZ.</p>`;
+  $("#map-chart").innerHTML = svg;
+  $("#map-table").innerHTML = `<table class="res"><thead><tr><th class="l">Código</th><th class="l">Nombre</th><th class="l">Componente</th><th class="l">Rol</th><th>Latitud</th><th>Longitud</th><th>Origen</th><th>Grupos relevados</th></tr></thead><tbody>${state.sitios.map(s => { const ll = siteLatLon(s); const gr = GRUPOS.filter(g => estadoDe(s, g.id).e === "relevado").map(g => g.n); return `<tr><td class="l"><b>${h(s.codigo)}</b></td><td class="l">${h(s.nombre || "")}</td><td class="l">${h(s.componente || "")}</td><td class="l">${h(s.rol || "")}</td><td>${ll ? fmt(ll.lat, 5) : '<span class="chip na">—</span>'}</td><td>${ll ? fmt(ll.lon, 5) : ""}</td><td><small>${ll ? (ll.from === "gk" ? `GK faja ${s.faja}` : "decimales") : "sin coordenadas"}</small></td><td class="l"><small>${gr.join(", ") || "—"}</small></td></tr>`; }).join("")}</tbody></table>`;
+}
+function niceStep(v){ const p = 10 ** Math.floor(Math.log10(v)); const r = v / p; return (r < 1.5 ? 1 : r < 3.5 ? 2 : r < 7.5 ? 5 : 10) * p; }
+$("#map-label").onchange = renderMap;
+
+/* ---------- Control ---------- */
+function avisos(){
+  const out = [], add = (tipo, texto, afecta) => out.push({tipo, texto, afecta});
+  const codes = new Map(); for (const s of state.sitios){ if (!(s.codigo || "").trim()) add("error", "Sitio sin código", "no se puede cruzar con las planillas"); const k = norm(s.codigo); if (k && codes.has(k)) add("error", `Código de sitio repetido: ${s.codigo}`, "las planillas se cruzan con el primero"); codes.set(k, 1); if (!siteLatLon(s)) add("aviso", `${siteLabel(s)}: sin coordenadas`, "no entra en el mapa ni en el KMZ"); if ((num(s.este) != null || num(s.norte) != null) && !s.faja) add("aviso", `${siteLabel(s)}: Gauss-Krüger sin faja`, "no se convierte; Kenti no adivina la faja"); const ll = siteLatLon(s); if (ll && (ll.lat > 0 || ll.lon > 0)) add("aviso", `${siteLabel(s)}: latitud o longitud positiva`, "en Argentina van en negativo; revisar"); }
+  for (const en of state.entregas){ const g = grupo(en.grupo); en.siteMap.forEach((id, j) => { if (!id) add("error", `${g.n}: columna «${en.matrix.sites[j]}» sin sitio`, "esa columna queda fuera de todo"); }); const dupS = en.siteMap.filter((id, j) => id && en.siteMap.indexOf(id) !== j); if (dupS.length) add("aviso", `${g.n}: dos columnas apuntan al mismo sitio`, "se suman como réplicas");
+    en.matrix.warnings.forEach(w => add("aviso", `${g.n}: ${w}`, "matriz")); if (!en.medida) add("info", `${g.n}: medida sin declarar`, "las tablas no dicen si son individuos, densidad o cobertura"); const neg = en.matrix.values.some(r => r.some(v => v != null && v < 0)); if (neg) add("error", `${g.n}: valores negativos`, "índices sin sentido");
+    if (en.fq) en.fqMap.forEach((id, i) => { if (!id) add("aviso", `${g.n}: fisicoquímicos de «${en.fq.data[i].site}» sin sitio`, "no se muestran"); }); }
+  for (const g of GRUPOS) if (!entregaDe(g.id)) add("info", `${g.n}: sin entrega`, `columna vacía en esfuerzo e índices de ${COMP[g.c].short}`);
+  for (const c of ["lim", "ter"]) for (const s of sitesFor(c)) for (const g of gruposDe(c)){ const r = estadoDe(s, g.id); if (r.e === "relevado"){ const vec = vectorDe(s, g.id); if (vec && vec.v.every(v => !v)) add("aviso", `${siteLabel(s)} · ${g.n}: relevado pero sin ningún taxón`, "S = 0; si no se relevó, marcarlo en Esfuerzo"); if (vec && vec.hasNA) add("info", `${siteLabel(s)} · ${g.n}: celdas sin dato`, "los índices son un mínimo"); } }
+  return out;
+}
+function ctlCount(){ const n = avisos().filter(a => a.tipo !== "info").length; $("#ctl-n").hidden = !n; $("#ctl-n").textContent = n; }
+function renderCtl(){
+  const out = avisos(); const order = {error:0, aviso:1, info:2}; out.sort((a, b) => order[a.tipo] - order[b.tipo]);
+  $("#ctl-table").innerHTML = out.length ? `<table class="res"><thead><tr><th class="l">Tipo</th><th class="l">Qué</th><th class="l">Qué afecta</th></tr></thead><tbody>${out.map(a => `<tr><td class="l"><span class="chip ${a.tipo === "error" ? "bad" : a.tipo === "aviso" ? "mid" : "soft"}">${a.tipo}</span></td><td class="l">${h(a.texto)}</td><td class="l">${h(a.afecta)}</td></tr>`).join("")}</tbody></table>` : `<p class="foot">Sin avisos.</p>`;
+  const dic = new Map(); for (const en of state.entregas) en.matrix.sites.forEach((lbl, j) => { const id = en.siteMap[j] || "__none"; if (!dic.has(id)) dic.set(id, new Map()); const m = dic.get(id); if (!m.has(lbl)) m.set(lbl, []); m.get(lbl).push(grupo(en.grupo).n); });
+  const rows = [...dic.entries()].sort((a, b) => (a[0] === "__none") - (b[0] === "__none"));
+  $("#ctl-dic").innerHTML = rows.length ? `<table class="res"><thead><tr><th class="l">Sitio</th><th class="l">Escrituras encontradas</th></tr></thead><tbody>${rows.map(([id, m]) => `<tr><td class="l">${id === "__none" ? '<span class="chip bad">sin reconocer</span>' : `<b>${h(siteLabel(siteOf(id)))}</b>`}</td><td class="l">${[...m.entries()].map(([lbl, gs]) => `<span class="mono">${h(lbl)}</span> <small>(${gs.join(", ")})</small>`).join(" · ")}</td></tr>`).join("")}</tbody></table>` : `<p class="foot">Sin planillas.</p>`;
+}
+
+/* ---------- Pestañas, diálogos ---------- */
+function stats(host, items){ (typeof host === "string" ? $(host) : host).innerHTML = items.map(([k, v, s]) => `<div class="stat"><div class="k">${h(k)}</div><div class="v">${v}${s ? `<small>${h(s)}</small>` : ""}</div></div>`).join(""); }
+let curTab = "sit";
+function renderTab(t){ if (t === "sit"){ renderProy(); renderTable("sitios"); } ({ent: renderEnt, esf: renderEsf, lim: () => renderComp("lim"), ter: () => renderComp("ter"), con: renderCon, map: renderMap, ctl: renderCtl}[t] || (() => {}))(); ctlCount(); $("#ent-n").hidden = !state.entregas.length; $("#ent-n").textContent = state.entregas.length; }
+function showTab(t){ curTab = t; $$(".tab").forEach(b => { const on = b.dataset.tab === t; b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; }); $$(".panel").forEach(p => p.hidden = p.id !== "p-" + t); renderTab(t); }
+$$(".tab").forEach(b => b.onclick = () => showTab(b.dataset.tab));
+$("#add-sitios").onclick = addSite;
+const toastEl = $("#toast"); let toastT;
+function toast(msg, undo){ clearTimeout(toastT); toastEl.innerHTML = `<span>${h(msg)}</span>${undo ? `<button type="button">Deshacer</button>` : ""}`; toastEl.hidden = false; if (undo) toastEl.querySelector("button").onclick = () => { undo(); toastEl.hidden = true; }; toastT = setTimeout(() => { toastEl.hidden = true; }, undo ? 8000 : 4500); }
+function confirmDlg(title, text){ return new Promise(res => { const d = $("#dlg-confirm"); $("#dlg-title").textContent = title; $("#dlg-text").textContent = text; d.showModal(); $("#dlg-yes").onclick = () => { d.close(); res(true); }; $("#dlg-no").onclick = () => { d.close(); res(false); }; d.oncancel = () => res(false); }); }
+const doReset = async () => { if (!state.ejemplo && !(await confirmDlg("Cargar el ejemplo", "Se reemplazan sitios y planillas por la campaña de ejemplo. Exportá antes si querés conservar algo."))) return; state = ejemplo(); save(); exChip(); showTab(curTab); toast("Ejemplo cargado"); };
+const doClear = async () => { if (!(await confirmDlg("Campaña nueva", "Se borran sitios, planillas y correcciones de esfuerzo. Exportá antes si querés conservar algo."))) return; state = vacio(); save(); exChip(); showTab("sit"); toast("Listo: cargá los sitios y después las planillas"); };
+$("#btn-reset").onclick = $("#btn-example").onclick = doReset; $("#btn-clear").onclick = $("#btn-new").onclick = doClear;
+// Pegar sitios
+$("#btn-paste-sites").onclick = () => { $("#sites-area").value = ""; $("#sites-err").textContent = ""; $("#dlg-sites").showModal(); };
+$("#sites-cancel").onclick = () => $("#dlg-sites").close();
+$("#sites-ok").onclick = () => {
+  try {
+    const rows = csvToRows($("#sites-area").value); if (rows.length < 2) throw new Error("hacen falta encabezados y al menos una fila");
+    const head = rows[0].map(norm); const find = (...names) => head.findIndex(hh => names.some(n => hh.startsWith(n)));
+    const I = {codigo: find("codigo", "code", "sitio", "site", "id"), nombre: find("nombre", "name"), componente: find("compon"), rol: find("rol", "role"), ambiente: find("ambien", "habitat"), lat: find("lat"), lon: find("lon", "lng"), este: find("este", "east", "x"), norte: find("norte", "north", "y"), faja: find("faja", "zona", "zone"), altitud: find("altit", "elev", "msnm"), alias: find("alias", "otros")};
+    if (I.codigo < 0) throw new Error("no encuentro la columna de código o sitio");
+    let nN = 0, nU = 0; const g = (r, k) => I[k] >= 0 ? String(r[I[k]] ?? "").trim() : "";
+    for (const r of rows.slice(1)){ const code = g(r, "codigo"); if (!code) continue; let s = state.sitios.find(x => norm(x.codigo) === norm(code)); if (!s){ s = {id: uid(), codigo: code, componente: "Ambos"}; state.sitios.push(s); nN++; } else nU++;
+      for (const k of ["nombre", "componente", "rol", "ambiente", "faja", "alias"]){ const v = g(r, k); if (v) s[k] = k === "componente" ? (/lim|agua/i.test(v) ? "Limnología" : /terr|flora|fauna/i.test(v) ? "Terrestre" : "Ambos") : k === "rol" ? (/ref/i.test(v) ? "Referencia" : /infl|impac/i.test(v) ? "Influencia" : /control|testigo/i.test(v) ? "Control" : v) : v; }
+      for (const k of ["lat", "lon", "este", "norte", "altitud"]){ const v = num(g(r, k)); if (v != null) s[k] = v; } }
+    $("#dlg-sites").close(); markEdited(); remapAll(); save(); renderTable("sitios"); toast(`${nN} sitios nuevos, ${nU} actualizados`);
+  } catch(e){ $("#sites-err").textContent = e.message; }
+};
+
+/* ---------- Exportación a Excel: el libro .xlsx se arma aquí mismo (XML de Office + zip), sin bibliotecas externas ---------- */
+const XE = s => String(s ?? "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const U8 = new TextEncoder();
+const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++){ let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(u8){ let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC_T[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+async function deflateRaw(u8){
+  if (typeof CompressionStream === "undefined") return null;
+  try { return new Uint8Array(await new Response(new Blob([u8]).stream().pipeThrough(new CompressionStream("deflate-raw"))).arrayBuffer()); } catch(e){ return null; }
+}
+async function zipFiles(files){
+  const parts = [], central = []; let offset = 0;
+  const d = new Date(), tm = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1), dt = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+  for (const f of files){
+    const name = U8.encode(f.name), data = typeof f.data === "string" ? U8.encode(f.data) : f.data, crc = crc32(data);
+    let method = 0, body = data;
+    const z = await deflateRaw(data); if (z && z.length < data.length){ method = 8; body = z; }
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true); lh.setUint16(8, method, true);
+    lh.setUint16(10, tm, true); lh.setUint16(12, dt, true); lh.setUint32(14, crc, true); lh.setUint32(18, body.length, true); lh.setUint32(22, data.length, true); lh.setUint16(26, name.length, true);
+    parts.push(new Uint8Array(lh.buffer), name, body);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true); ch.setUint16(10, method, true);
+    ch.setUint16(12, tm, true); ch.setUint16(14, dt, true); ch.setUint32(16, crc, true); ch.setUint32(20, body.length, true); ch.setUint32(24, data.length, true);
+    ch.setUint16(28, name.length, true); ch.setUint32(42, offset, true);
+    central.push(new Uint8Array(ch.buffer), name);
+    offset += 30 + name.length + body.length;
+  }
+  const size = central.reduce((t, a) => t + a.length, 0), end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true); end.setUint32(12, size, true); end.setUint32(16, offset, true);
+  return new Blob([...parts, ...central, new Uint8Array(end.buffer)], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+}
+class XStyles {
+  constructor(){
+    this.fonts = []; this.fills = ['<fill><patternFill patternType="none"/></fill>', '<fill><patternFill patternType="gray125"/></fill>'];
+    this.borders = ['<border><left/><right/><top/><bottom/><diagonal/></border>']; this.nums = []; this.xfs = []; this.keys = new Map();
+    this.font({}); this.xf({});
+  }
+  _id(list, xml){ let i = list.indexOf(xml); if (i < 0){ list.push(xml); i = list.length - 1; } return i; }
+  font({b, i, sz = 11, color = "FF18200F", name = "Calibri"}){ return this._id(this.fonts, `<font>${b ? "<b/>" : ""}${i ? "<i/>" : ""}<sz val="${sz}"/><color rgb="${color}"/><name val="${name}"/><family val="2"/></font>`); }
+  fill(rgb){ return rgb ? this._id(this.fills, `<fill><patternFill patternType="solid"><fgColor rgb="${rgb}"/><bgColor indexed="64"/></patternFill></fill>`) : 0; }
+  border(k){ if (!k) return 0; const line = `style="thin"><color rgb="FFC3CAB9"/>`; return this._id(this.borders, `<border><left/><right/><top/><bottom ${line}</bottom><diagonal/></border>`); }
+  num(code){ const builtin = {"General":0, "0":1, "0.00":2, "#,##0":3}; if (code in builtin) return builtin[code]; return 164 + this._id(this.nums, code); }
+  xf(o){
+    const key = JSON.stringify(o); if (this.keys.has(key)) return this.keys.get(key);
+    const al = (o.align || o.wrap || o.v) ? `<alignment${o.align ? ` horizontal="${o.align}"` : ""}${o.v ? ` vertical="${o.v}"` : ""}${o.wrap ? ' wrapText="1"' : ""}/>` : "";
+    this.xfs.push(`<xf numFmtId="${this.num(o.num || "General")}" fontId="${this.font(o.font || {})}" fillId="${this.fill(o.fill)}" borderId="${this.border(o.border)}" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1"${al ? ' applyAlignment="1"' : ""}>${al}</xf>`);
+    this.keys.set(key, this.xfs.length - 1); return this.xfs.length - 1;
+  }
+  xml(){
+    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">`
+      + (this.nums.length ? `<numFmts count="${this.nums.length}">${this.nums.map((c, i) => `<numFmt numFmtId="${164+i}" formatCode="${XE(c)}"/>`).join("")}</numFmts>` : "")
+      + `<fonts count="${this.fonts.length}">${this.fonts.join("")}</fonts><fills count="${this.fills.length}">${this.fills.join("")}</fills>`
+      + `<borders count="${this.borders.length}">${this.borders.join("")}</borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>`
+      + `<cellXfs count="${this.xfs.length}">${this.xfs.join("")}</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;
+  }
+}
+const colName = c => { let s = ""; c++; while (c){ const m = (c - 1) % 26; s = String.fromCharCode(65 + m) + s; c = Math.floor((c - 1)/26); } return s; };
+const cref = (r, c) => colName(c) + (r + 1);
+class XSheet {
+  constructor(name){ this.name = name.replace(/[\\/?*\[\]:]/g, " ").slice(0, 31); this.cells = new Map(); this.widths = {}; this.freeze = null; }
+  set(r, c, v, st = 0){ if (v === undefined) return this; if (!this.cells.has(r)) this.cells.set(r, new Map()); this.cells.get(r).set(c, {v, st}); return this; }
+  row(r, c0, vals, st){ vals.forEach((v, i) => this.set(r, c0 + i, v, Array.isArray(st) ? st[i] : st)); return this; }
+  cellXml(r, c, cell){
+    const a = `r="${cref(r, c)}"${cell.st ? ` s="${cell.st}"` : ""}`, v = cell.v;
+    if (v == null || v === "") return cell.st ? `<c ${a}/>` : "";
+    if (typeof v === "number") return okNum(v) ? `<c ${a}><v>${v}</v></c>` : `<c ${a}/>`;
+    return `<c ${a} t="inlineStr"><is><t xml:space="preserve">${XE(v)}</t></is></c>`;
+  }
+  xml(selected){
+    let sd = "";
+    for (const r of [...this.cells.keys()].sort((a, b) => a - b)){ const cols = [...this.cells.get(r).entries()].sort((a, b) => a[0] - b[0]); sd += `<row r="${r+1}">${cols.map(([c, cell]) => this.cellXml(r, c, cell)).join("")}</row>`; }
+    let pane = ""; if (this.freeze){ const [fr, fc] = this.freeze; pane = `<pane${fc ? ` xSplit="${fc}"` : ""}${fr ? ` ySplit="${fr}"` : ""} topLeftCell="${cref(fr, fc)}" activePane="${fr && fc ? "bottomRight" : fr ? "bottomLeft" : "topRight"}" state="frozen"/>`; }
+    const cols = Object.keys(this.widths).map(Number).sort((a, b) => a - b).map(c => `<col min="${c+1}" max="${c+1}" width="${this.widths[c]}" customWidth="1"/>`).join("");
+    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">`
+      + `<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><sheetViews><sheetView workbookViewId="0" showGridLines="0"${selected ? ' tabSelected="1"' : ""}>${pane}</sheetView></sheetViews>`
+      + `<sheetFormatPr defaultRowHeight="15"/>${cols ? `<cols>${cols}</cols>` : ""}<sheetData>${sd}</sheetData>`
+      + `<pageMargins left="0.5" right="0.5" top="0.6" bottom="0.6" header="0.3" footer="0.3"/><pageSetup paperSize="9" orientation="landscape" fitToWidth="1" fitToHeight="0"/></worksheet>`;
+  }
+}
+const REL = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+async function workbookBlob(sheets, styles, title){
+  const files = [], over = [];
+  sheets.forEach((sh, i) => { files.push({name:`xl/worksheets/sheet${i+1}.xml`, data: sh.xml(i === 0)}); over.push(`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`); });
+  const iso = new Date().toISOString().replace(/\.\d+Z$/, "Z");
+  files.unshift(
+    {name:"[Content_Types].xml", data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>${over.join("")}</Types>`},
+    {name:"_rels/.rels", data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${REL}/officeDocument" Target="xl/workbook.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId3" Type="${REL}/extended-properties" Target="docProps/app.xml"/></Relationships>`},
+    {name:"docProps/core.xml", data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>${XE(title)}</dc:title><dc:creator>Kenti Social</dc:creator><dcterms:created xsi:type="dcterms:W3CDTF">${iso}</dcterms:created><dcterms:modified xsi:type="dcterms:W3CDTF">${iso}</dcterms:modified></cp:coreProperties>`},
+    {name:"docProps/app.xml", data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>Kenti</Application></Properties>`},
+    {name:"xl/workbook.xml", data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="${REL}"><bookViews><workbookView xWindow="0" yWindow="0" windowWidth="28800" windowHeight="16000"/></bookViews><sheets>${sheets.map((s, i) => `<sheet name="${XE(s.name)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join("")}</sheets></workbook>`},
+    {name:"xl/_rels/workbook.xml.rels", data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheets.map((_, i) => `<Relationship Id="rId${i+1}" Type="${REL}/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join("")}<Relationship Id="rId${sheets.length+1}" Type="${REL}/styles" Target="styles.xml"/></Relationships>`},
+    {name:"xl/styles.xml", data: styles.xml()},
+  );
+  return zipFiles(files);
+}
+
+/* ---------- KMZ ---------- */
+function kmlDoc(){
+  const XE2 = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const p = state.proyecto; const name = [p.nombre, p.campania].filter(Boolean).join(" · ") || "Kenti Master";
+  const styles = Object.entries(ROL_KML).map(([rol, col]) => `<Style id="rol-${rol || "sin"}"><IconStyle><color>${col}</color><scale>1.1</scale><Icon><href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href></Icon></IconStyle><LabelStyle><scale>0.9</scale></LabelStyle></Style>`).join("");
+  const folder = (c) => {
+    const ss = sitesFor(c).filter(s => siteLatLon(s)); if (!ss.length) return "";
+    return `<Folder><name>${XE2(COMP[c].n)}</name>${ss.map(s => { const ll = siteLatLon(s); const gs = gruposDe(c);
+      const rows = gs.map(g => { const e = estadoDe(s, g.id).e; if (e !== "relevado") return `<tr><td>${XE2(g.n)}</td><td colspan="3"><i>${XE2(ESTADO_L[e])}</i></td></tr>`; const vec = vectorDe(s, g.id); const a = vec ? alpha(vec.v) : null; return `<tr><td>${XE2(g.n)}</td><td>${a ? a.S : "—"}</td><td>${a ? fmt(a.N, 0) : "—"}</td><td>${a && a.H != null ? fmt(a.H, 2) : "—"}</td></tr>`; }).join("");
+      const {out} = fqTable(); const fq = c === "lim" && out.get(s.id) ? Object.entries(out.get(s.id)).map(([id, arr]) => `${FQ_VARS.find(v => v[0] === id)?.[1] || id}: ${arr.map(x => fmt(x.v, 2)).join(" / ")}`).join(" · ") : "";
+      const desc = `<![CDATA[<b>${XE2(s.nombre || "")}</b><br>Rol: ${XE2(s.rol || "—")} · Ambiente: ${XE2(s.ambiente || "—")} · Altitud: ${s.altitud ?? "—"} m<br>Coordenadas: ${fmt(ll.lat, 5)}, ${fmt(ll.lon, 5)}${ll.from === "gk" ? ` (desde Gauss-Krüger faja ${s.faja}: ${s.este} E, ${s.norte} N)` : ""}<br><br><table border="1" cellpadding="3" cellspacing="0"><tr><th>Grupo</th><th>S</th><th>N</th><th>H′</th></tr>${rows}</table>${fq ? `<br>${fq}` : ""}${s.obs ? `<br><i>${XE2(s.obs)}</i>` : ""}<br><small>${XE2(name)} · Kenti Master v${VERSION}</small>]]>`;
+      return `<Placemark><name>${XE2(s.codigo || s.nombre)}</name><description>${desc}</description><styleUrl>#rol-${s.rol || "sin"}</styleUrl><ExtendedData>${[["codigo", s.codigo], ["nombre", s.nombre], ["componente", s.componente], ["rol", s.rol], ["ambiente", s.ambiente], ["altitud", s.altitud]].map(([k, v]) => `<Data name="${k}"><value>${XE2(v ?? "")}</value></Data>`).join("")}${gs.map(g => { const e = estadoDe(s, g.id).e; const vec = e === "relevado" ? vectorDe(s, g.id) : null; return `<Data name="S_${g.id}"><value>${vec ? alpha(vec.v).S : XE2(ESTADO_L[e])}</value></Data>`; }).join("")}</ExtendedData><Point><altitudeMode>clampToGround</altitudeMode><coordinates>${ll.lon},${ll.lat},0</coordinates></Point></Placemark>`; }).join("")}</Folder>`;
+  };
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>${XE2(name)}</name><description>Sitios de muestreo · exportado por Kenti Master el ${today()}. Color: verde referencia, rojo influencia, azul control.</description>${styles}${folder("lim")}${folder("ter")}</Document></kml>`;
+}
+async function exportKmz(){
+  const n = state.sitios.filter(s => siteLatLon(s)).length; if (!n){ toast("Ningún sitio tiene coordenadas"); return; }
+  const blob = await zipFiles([{name:"doc.kml", data: kmlDoc()}]); const kmz = new Blob([blob], {type:"application/vnd.google-earth.kmz"});
+  const name = "Kenti-Master-sitios-" + (state.proyecto.nombre || "campania").replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-|-$/g, "").slice(0, 40) + ".kmz";
+  const url = URL.createObjectURL(kmz), a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
+  toast(`KMZ descargado: ${n} sitios`);
+}
+$("#btn-kmz").onclick = exportKmz;
+
+/* ---------- Excel ---------- */
+const rnd = (v, d = 3) => v == null || !Number.isFinite(v) ? "" : Math.round(v * 10 ** d) / 10 ** d;
+async function exportExcel(){
+  const st = new XStyles();
+  const S = { title: st.xf({font:{b:true, sz:14}}), sub: st.xf({font:{i:true, color:"FF768070"}}), head: st.xf({font:{b:true, color:"FFFFFFFF"}, fill:"FF3D6B1C", wrap:true, v:"top"}), txt: st.xf({wrap:true, v:"top", border:"bottom"}), num: st.xf({v:"top", border:"bottom", num:"General"}), lab: st.xf({font:{b:true}}), tot: st.xf({font:{b:true}, fill:"FFEAEEE5", border:"bottom"}),
+    ok: st.xf({fill:"FFE2ECD5", border:"bottom", align:"center"}), mid: st.xf({fill:"FFF6EFDC", border:"bottom", align:"center"}), na: st.xf({fill:"FFEAEEE5", font:{color:"FF768070"}, border:"bottom", align:"center"}), bad: st.xf({fill:"FFF7E2DC", border:"bottom", align:"center"}), amber: st.xf({fill:"FFF6EFDC", v:"top", border:"bottom", num:"General"}) };
+  const EST_ST = {relevado: S.ok, no_relevado: S.mid, no_aplicable: S.na, sin_entrega: S.bad};
+  const p = state.proyecto, sheets = []; const title = [p.nombre, p.campania].filter(Boolean).join(" · ") || "Campaña";
+  const head = (sh, t, sub) => { sh.set(0, 0, t, S.title); sh.set(1, 0, `${title} · ${sub}`, S.sub); return 3; };
+  const table = (sh, r0, cols, rows, widths) => { sh.row(r0, 0, cols, S.head); sh.freeze = [r0 + 1, 0]; (widths || []).forEach((w, i) => sh.widths[i] = w); let r = r0 + 1; for (const row of rows){ row.forEach((v, i) => sh.set(r, i, v, typeof v === "number" ? S.num : S.txt)); r++; } return r; };
+  // Resumen
+  const sp = new XSheet("Resumen"); let r = head(sp, "Kenti Master · consolidado de campaña", "exportado el " + today()); sp.widths = {0:30, 1:90};
+  for (const f of PROY_FIELDS){ sp.set(r, 0, f.l, S.lab); sp.set(r, 1, p[f.k] ?? "", S.txt); r++; }
+  r++; sp.set(r++, 0, "Planillas recibidas", S.lab);
+  for (const g of GRUPOS){ const en = entregaDe(g.id); sp.set(r, 0, g.n, S.txt); sp.set(r, 1, en ? `${en.archivo} · ${en.matrix.taxa.length} taxones × ${en.matrix.sites.length} sitios · ${en.medida || "medida sin declarar"}` : "sin entrega", en ? S.txt : S.bad); r++; }
+  r++; sp.set(r++, 0, "Reglas", S.lab); ["Los huecos no se imputan: cada celda vacía dice su motivo (no relevado, no aplicable, sin entrega, sin dato).", "Los promedios viajan con su n; con menos de 2 valores no se promedia. Los no aplicables salen del denominador.", "Shannon en logaritmo natural, calculado desde cada matriz con las unidades sumadas por sitio.", "Spearman sólo con 5 o más sitios en común; p corregido por Benjamini-Hochberg."].forEach(t => sp.set(r++, 0, t, S.txt));
+  sheets.push(sp);
+  // Sitios
+  const ss = new XSheet("Sitios"); r = head(ss, "Sitios de muestreo", "coordenadas en WGS84; las convertidas desde Gauss-Krüger están marcadas");
+  table(ss, r, ["Código", "Nombre", "Componente", "Rol", "Ambiente", "Latitud", "Longitud", "Origen coord.", "Este GK", "Norte GK", "Faja", "Altitud", "Alias", "Observaciones"], state.sitios.map(s => { const ll = siteLatLon(s); return [s.codigo || "", s.nombre || "", s.componente || "", s.rol || "", s.ambiente || "", ll ? rnd(ll.lat, 6) : "", ll ? rnd(ll.lon, 6) : "", ll ? (ll.from === "gk" ? "Gauss-Krüger faja " + s.faja : "decimales") : "sin coordenadas", num(s.este) ?? "", num(s.norte) ?? "", s.faja || "", num(s.altitud) ?? "", s.alias || "", s.obs || ""]; }), [10, 28, 12, 12, 12, 11, 11, 20, 12, 12, 6, 9, 30, 40]);
+  sheets.push(ss);
+  // Esfuerzo
+  const ef = new XSheet("Esfuerzo"); r = head(ef, "Esfuerzo de muestreo · sitio × grupo", "relevado / no relevado / no aplicable / sin entrega"); ef.widths = {0:12, 1:28};
+  for (const c of ["lim", "ter"]){ const gs = gruposDe(c), sl = sitesFor(c); ef.set(r++, 0, COMP[c].n, S.lab); ef.row(r++, 0, ["Código", "Nombre", ...gs.map(g => g.n), "Relevados"], S.head); gs.forEach((_, i) => ef.widths[2 + i] = 16);
+    for (const s of sl){ let n = 0; ef.set(r, 0, s.codigo || "", S.txt); ef.set(r, 1, s.nombre || "", S.txt); gs.forEach((g, i) => { const e = estadoDe(s, g.id).e; if (e === "relevado") n++; ef.set(r, 2 + i, ESTADO_L[e], EST_ST[e]); }); ef.set(r, 2 + gs.length, `${n}/${gs.length}`, S.txt); r++; }
+    ef.set(r, 0, "Sitios relevados", S.tot); ef.set(r, 1, "", S.tot); gs.forEach((g, i) => ef.set(r, 2 + i, `${sl.filter(s => estadoDe(s, g.id).e === "relevado").length}/${sl.filter(s => estadoDe(s, g.id).e !== "no_aplicable").length}`, S.tot)); r += 2; }
+  sheets.push(ef);
+  // Índices por componente
+  for (const idx of ["S", "N", "H", "D1", "J"]){
+    const sh = new XSheet(IDX_L[idx].replace(/[′()]/g, "").slice(0, 31)); r = head(sh, IDX_L[idx] + " por sitio y grupo", "celdas vacías con su motivo; promedio con n"); sh.widths = {0:12, 1:28};
+    for (const c of ["lim", "ter"]){ const gs = gruposDe(c), sl = sitesFor(c); sh.set(r++, 0, COMP[c].n, S.lab); sh.row(r++, 0, ["Código", "Nombre", "Rol", ...gs.map(g => g.n), "Promedio", "n"], S.head); gs.forEach((_, i) => sh.widths[3 + i] = 16);
+      const colV = gs.map(() => []);
+      for (const s of sl){ sh.set(r, 0, s.codigo || "", S.txt); sh.set(r, 1, s.nombre || "", S.txt); sh.set(r, 2, s.rol || "", S.txt); const vals = []; gs.forEach((g, i) => { const x = cellIdx(s, g.id, idx); if (x.v != null){ vals.push(x.v); colV[i].push(x.v); sh.set(r, 3 + i, rnd(x.v, 4), x.na ? S.amber : S.num); } else sh.set(r, 3 + i, x.why, EST_ST[Object.keys(ESTADO_L).find(k => ESTADO_L[k] === x.why)] || S.na); }); sh.set(r, 3 + gs.length, vals.length >= 2 ? rnd(sum(vals) / vals.length, 4) : "n < 2", vals.length >= 2 ? S.num : S.na); sh.set(r, 4 + gs.length, vals.length, S.num); r++; }
+      sh.set(r, 0, "Promedio por grupo", S.tot); sh.set(r, 1, "", S.tot); sh.set(r, 2, "", S.tot); gs.forEach((g, i) => sh.set(r, 3 + i, colV[i].length >= 2 ? rnd(sum(colV[i]) / colV[i].length, 4) : "", S.tot)); r += 2; }
+    sheets.push(sh);
+  }
+  // Fisicoquímicos
+  const {out, vars} = fqTable(); if (vars.size){ const fq = new XSheet("Fisicoquímicos"); r = head(fq, "Fisicoquímicos por sitio", "de las planillas de limnología que los trajeron"); const V = [...vars.entries()]; table(fq, r, ["Código", "Nombre", ...V.map(([, l]) => l), "Origen"], sitesFor("lim").map(s => { const o = out.get(s.id) || {}; return [s.codigo || "", s.nombre || "", ...V.map(([id]) => o[id] ? rnd(o[id][0].v, 3) : ""), [...new Set(V.flatMap(([id]) => (o[id] || []).map(x => grupo(x.g).n)))].join(", ")]; }), [10, 28, ...V.map(() => 14), 24]); sheets.push(fq); }
+  // Similitud por grupo (Bray-Curtis y Jaccard)
+  const sm = new XSheet("Similitud"); r = head(sm, "Similitud entre sitios por grupo", "Bray-Curtis (abundancia) y Jaccard (presencia); sólo sitios relevados"); sm.widths = {0:14};
+  for (const c of ["lim", "ter"]) for (const g of gruposDe(c)){ for (const sim of ["bc", "jac"]){ const b = betaFor(c, g.id, sim); if (!b) continue; sm.set(r++, 0, `${g.n} · ${SIM[sim].n}`, S.lab); sm.row(r++, 0, ["", ...b.names], S.head); b.names.forEach((n, i) => { sm.set(r, 0, n, S.txt); b.M[i].forEach((v, j) => sm.set(r, 1 + j, rnd(v, 3), S.num)); r++; }); r++; } }
+  sheets.push(sm);
+  // Concordancia
+  const cn = new XSheet("Concordancia"); r = head(cn, "Concordancia entre grupos (riqueza)", "Spearman con n ≥ 5 y p corregido por BH; Kendall W"); cn.widths = {0:14, 1:40};
+  const skipped = [];
+  for (const c of ["lim", "ter"]){ const gs = gruposDe(c).filter(g => entregaDe(g.id)), sl = sitesFor(c); const pairs = [];
+    for (let i = 0; i < gs.length; i++) for (let j = i + 1; j < gs.length; j++){ const x = [], y = []; for (const s of sl){ const a = cellIdx(s, gs[i].id, "S"), b = cellIdx(s, gs[j].id, "S"); if (a.v != null && b.v != null){ x.push(a.v); y.push(b.v); } } if (x.length < 5){ skipped.push([COMP[c].short, `${gs[i].n} × ${gs[j].n}`, `${x.length} sitio(s) en común, mínimo 5`]); continue; } const spr = spearman(x, y); if (!spr){ skipped.push([COMP[c].short, `${gs[i].n} × ${gs[j].n}`, "sin varianza"]); continue; } pairs.push([`${gs[i].n} × ${gs[j].n}`, spr.rho, spr.n, spr.p]); }
+    const q = benjaminiHochberg(pairs.map(pp => pp[3])); cn.set(r++, 0, COMP[c].n, S.lab); r = table(cn, r, ["Componente", "Par", "ρ", "n", "p", "p (BH)"], pairs.map((pp, k) => [COMP[c].short, pp[0], rnd(pp[1]), pp[2], rnd(pp[3], 4), rnd(q[k], 4)])); r++;
+    let common = sl.filter(s => gs.every(g => cellIdx(s, g.id, "S").v != null)); if (common.length >= 3 && gs.length >= 2){ const W = kendallW(gs.map(g => common.map(s => cellIdx(s, g.id, "S").v))); cn.set(r++, 0, `Kendall W = ${rnd(W.W)} · ${W.n} sitios · ${W.m} grupos · χ² ${rnd(W.chi2, 2)} · p ${rnd(W.p, 4)}`, S.txt); } else cn.set(r++, 0, "Kendall W: menos de 3 sitios con dato en todos los grupos", S.txt); r++; }
+  if (skipped.length){ cn.set(r++, 0, "Pares no calculados", S.lab); table(cn, r, ["Componente", "Par", "Motivo"], skipped); }
+  sheets.push(cn);
+  // Matrices crudas
+  for (const en of state.entregas){ const g = grupo(en.grupo); const sh = new XSheet(("Matriz " + g.n).slice(0, 31)); r = head(sh, `${g.n} · matriz especie × sitio`, `${en.archivo}${en.hoja ? " · " + en.hoja : ""} · medida: ${en.medida || "sin declarar"}`); sh.widths = {0:34};
+    const m = en.matrix; sh.row(r, 0, ["Taxón", ...m.sites.map((lbl, j) => en.siteMap[j] ? siteLabel(siteOf(en.siteMap[j])) : lbl + " (sin sitio)")], S.head); sh.row(r + 1, 0, ["Escritura en la planilla", ...m.sites], S.sub); sh.freeze = [r + 2, 1]; r += 2;
+    m.taxa.forEach((t, i) => { sh.set(r, 0, t, S.txt); m.values[i].forEach((v, j) => sh.set(r, 1 + j, v == null ? "s/d" : v, v == null ? S.na : S.num)); r++; }); sheets.push(sh); }
+  // Control
+  const av = new XSheet("Control"); r = head(av, "Control", "lo que Kenti notó y no corrigió"); table(av, r, ["Tipo", "Qué", "Qué afecta"], avisos().map(a => [a.tipo, a.texto, a.afecta]), [8, 70, 60]); sheets.push(av);
+  const blob = await workbookBlob(sheets, st, "Kenti Master · " + title);
+  const name = "Kenti-Master-" + title.replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-|-$/g, "").slice(0, 40) + "-" + today();
+  if (appInfo){ try { const rq = await fetch("api/exportar?nombre=" + encodeURIComponent(name), {method:"POST", headers:{"X-Kenti":"1", "Content-Type":"application/octet-stream"}, body: blob}); if (rq.ok){ toast("Libro de Excel guardado en la carpeta de datos"); return; } } catch(e){} }
+  const url = URL.createObjectURL(blob), a = document.createElement("a"); a.href = url; a.download = name + ".xlsx"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
+  toast("Libro de Excel descargado");
+}
+$("#btn-export").onclick = async () => { const b = $("#btn-export"); b.disabled = true; try { await exportExcel(); } catch(e){ toast("No se pudo exportar: " + e.message); console.error(e); } b.disabled = false; };
+
+/* ---------- Arranque ---------- */
+(async () => {
+  if (/^https?:$/.test(location.protocol)) try {
+    const r = await fetch("api/info", {headers:{"X-Kenti":"1"}, cache:"no-store"});
+    if (r.ok){ appInfo = await r.json(); $("#app-save").hidden = false; $("#save-where").textContent = appInfo.carpeta || appInfo.datos || "la carpeta de datos"; $("#save-status").textContent = "Guardado"; const d = await fetch("api/datos", {headers:{"X-Kenti":"1"}, cache:"no-store"}); if (d.ok){ const s = await d.json(); if (validState(s)) state = normalize(s); } }
+  } catch(e){}
+  if (!state) state = loadLocal() || ejemplo();
+  exChip(); showTab("sit");
+})();
+
+</script>
+</body>
+</html>

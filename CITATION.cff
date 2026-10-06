@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Kenti Terrestre"
+version: "0.1.1"
+date-released: "2026-10-06"
+license: MIT
+repository-code: "https://github.com/carlosmariaflores-cloud/kenti-terrestre"
+url: "https://kenti.com.ar"
+abstract: "Offline desktop application for terrestrial biodiversity monitoring: flora, birds, mammals, herpetofauna and entomology modules behind a start screen, and a global-analysis module that consolidates the specialists' Excel books."
+keywords:
+  - biodiversity monitoring
+  - ecological software
+  - offline application
+  - Go
+authors:
+  - family-names: Flores
+    given-names: Carlos María
+    orcid: "https://orcid.org/0009-0000-8959-4738"
+    affiliation: "Atoj S.A.S."
