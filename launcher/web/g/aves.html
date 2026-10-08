@@ -2128,7 +2128,7 @@ function exportFonts(){
     const faces = [["Public Sans", 400, "PublicSans-Regular"], ["Public Sans", 500, "PublicSans-Medium"], ["Public Sans", 600, "PublicSans-SemiBold"], ["Public Sans", 700, "PublicSans-Bold"], ["IBM Plex Mono", 400, "IBMPlexMono-Regular"], ["IBM Plex Mono", 500, "IBMPlexMono-Medium"]];
     const out = [];
     for (const [fam, w, file] of faces){
-      try { const r = await fetch(`fuentes/${file}.woff2`); if (r.ok) out.push(`@font-face{font-family:"${fam}";font-weight:${w};src:url(data:font/woff2;base64,${b64(new Uint8Array(await r.arrayBuffer()))}) format("woff2")}`); } catch(e){}
+      try { const r = await fetch(`/fuentes/${file}.woff2`); if (r.ok) out.push(`@font-face{font-family:"${fam}";font-weight:${w};src:url(data:font/woff2;base64,${b64(new Uint8Array(await r.arrayBuffer()))}) format("woff2")}`); } catch(e){}
     }
     return out.join("");
   })();

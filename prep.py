@@ -42,6 +42,8 @@ for gid, (f, nombre) in MODS.items():
     s = s.replace('"/api/', '"api/')                       # relativo a /g/<id>/
     assert '/api/' not in s.replace('"api/', ''), gid
     s = s.replace("url(fuentes/", "url(/fuentes/").replace('href="icono.png"', 'href="/icono.png"')
+    # fuentes que la página incrusta al exportar figuras: ruta absoluta (la relativa daba 404 bajo /g/<id>/)
+    s = s.replace("fetch(`fuentes/", "fetch(`/fuentes/")
     if "@font-face" not in s:
         s = s.replace("</head>", FACES + "</head>", 1)
     s, k = re.subn(r"<body[^>]*>", lambda m: m.group(0) + "\n" + BAR % nombre, s, count=1)
