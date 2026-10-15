@@ -2418,6 +2418,36 @@ async function buildExport(){
       sh.img(rP, 10 + sh.colsFor(bi.w, 10) + 1, vr, "Varianza explicada por eje");
     }
   }
+  // 6 · Estado de conservación nacional (Res. 795-E/2017): sólo en la planilla, no entra en ningún análisis
+  try {
+    const ref = await (async () => { try { const r = await fetch("/datos/mamiferos-estado-ar.json", {cache: "no-store"}); return r.ok ? await r.json() : null; } catch(e){ return null; } })();
+    const lista = viewSpecies();
+    if (ref && Array.isArray(ref.datos) && lista.length){
+      const key = t => String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
+      // se busca por el nombre actual (AviList) y, si no, por el que usa la resolución de 2017
+      const idx = new Map(); ref.datos.forEach(d => { if (!idx.has(key(d[0]))) idx.set(key(d[0]), d); });  // si varios nombres de la resolución se fusionan en uno, vale el primero
+      ref.datos.forEach(d => { if (d[5] && !idx.has(key(d[5]))) idx.set(key(d[5]), d); });
+      const sh = new XSheet("6 Estado de conservación"); sheets.push(sh);
+      header(sh, "Estado de conservación nacional de las especies de la tabla");
+      put(sh, 3, `Fuente: ${ref.fuente}.`);
+      if (ref.fuente_complementaria) put(sh, 5, `Complemento: ${ref.fuente_complementaria}.`);
+      if (ref.taxonomia) put(sh, 2, `Taxonomía (orden, familia y nombres): ${ref.taxonomia}.`);
+      put(sh, 4, "Orden, familia y estado no intervienen en ningún cálculo. Se usa la nomenclatura actual de la lista de referencia citada arriba; los nombres de la resolución también se reconocen, y cuando difieren se indican en la nota.");
+      ["Especie", "Orden", "Familia", "Estado de conservación (Argentina)", "Nota"].forEach((t, c) => sh.set(6, c, t, S.head));
+      let r = 6, hit = 0;
+      lista.forEach(sp => {
+        let d = idx.get(key(sp.name)), nota = "";
+        if (!d){ const p = key(sp.name).split(" "); if (p.length > 2){ d = idx.get(p.slice(0, 2).join(" ")); if (d) nota = "Coincide a nivel de especie. "; } }
+        r++; if (d) hit++;
+        sh.set(r, 0, sp.name, S.sp);
+        sh.set(r, 1, d ? d[1] : "", S.txt); sh.set(r, 2, d ? d[2] : "", S.txt); sh.set(r, 3, d ? d[3] : "", S.txt);
+        const viejo = d && d[5] && key(d[5]) !== key(sp.name) ? `Nombre en la resolución: ${d[5]}. ` : "";
+        sh.set(r, 4, d ? (nota + viejo + d[4]).trim() : "Sin coincidencia en la resolución.", S.txt2);
+      });
+      put(sh, r + 2, `Con coincidencia: ${hit} de ${lista.length} especies.`);
+      sh.freeze = [7, 1]; sh.widths = {0: 30, 1: 20, 2: 20, 3: 42, 4: 60};
+    }
+  } catch(e){ /* la hoja es un complemento: si algo falla, el resto del libro sale igual */ }
   return {blob: await workbookBlob(sheets, X, `${GROUP.nombre} · resultados`), name: M.file};
 }
 

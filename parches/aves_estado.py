@@ -2,8 +2,8 @@
 """Aves: hoja «6 Estado de conservación» en el Excel de descarga.
 
 Agrega al libro exportado una hoja con orden, familia y estado de conservación nacional de cada
-especie de la tabla, tomados de launcher/web/datos/aves-estado-ar.json (Resolución 795-E/2017,
-Anexos I-III). Es sólo para la planilla: no cambia la tabla, los índices ni ningún cálculo, y si el
+especie de la tabla, tomados de launcher/web/datos/<grupo>-estado-ar.json (aves: Resolución 795-E/2017;
+mamíferos: Resolución 316/2021; herpetofauna: Resolución 1055/2013). Sirve para los tres grupos. Es sólo para la planilla: no cambia la tabla, los índices ni ningún cálculo, y si el
 archivo de datos no se puede leer el libro sale igual, sin la hoja.
 
 Uso: lo importa prep.py (apply(texto) -> texto); también corre solo sobre la página ya generada:
@@ -17,7 +17,7 @@ ANCLA = "  return {blob: await workbookBlob(sheets, X, `${GROUP.nombre} · resul
 
 JS = r'''  // 6 · Estado de conservación nacional (Res. 795-E/2017): sólo en la planilla, no entra en ningún análisis
   try {
-    const ref = await (async () => { try { const r = await fetch("/datos/aves-estado-ar.json", {cache: "no-store"}); return r.ok ? await r.json() : null; } catch(e){ return null; } })();
+    const ref = await (async () => { try { const r = await fetch("/datos/__ARCHIVO__", {cache: "no-store"}); return r.ok ? await r.json() : null; } catch(e){ return null; } })();
     const lista = viewSpecies();
     if (ref && Array.isArray(ref.datos) && lista.length){
       const key = t => String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
@@ -29,7 +29,7 @@ JS = r'''  // 6 · Estado de conservación nacional (Res. 795-E/2017): sólo en 
       put(sh, 3, `Fuente: ${ref.fuente}.`);
       if (ref.fuente_complementaria) put(sh, 5, `Complemento: ${ref.fuente_complementaria}.`);
       if (ref.taxonomia) put(sh, 2, `Taxonomía (orden, familia y nombres): ${ref.taxonomia}.`);
-      put(sh, 4, "Orden, familia y estado no intervienen en ningún cálculo. Se usa la nomenclatura actual de AviList; los nombres de la resolución de 2017 también se reconocen, y cuando difieren se indican en la nota.");
+      put(sh, 4, "Orden, familia y estado no intervienen en ningún cálculo. Se usa la nomenclatura actual de la lista de referencia citada arriba; los nombres de la resolución también se reconocen, y cuando difieren se indican en la nota.");
       ["Especie", "Orden", "Familia", "Estado de conservación (Argentina)", "Nota"].forEach((t, c) => sh.set(6, c, t, S.head));
       let r = 6, hit = 0;
       lista.forEach(sp => {
@@ -38,7 +38,7 @@ JS = r'''  // 6 · Estado de conservación nacional (Res. 795-E/2017): sólo en 
         r++; if (d) hit++;
         sh.set(r, 0, sp.name, S.sp);
         sh.set(r, 1, d ? d[1] : "", S.txt); sh.set(r, 2, d ? d[2] : "", S.txt); sh.set(r, 3, d ? d[3] : "", S.txt);
-        const viejo = d && d[5] && key(d[5]) !== key(sp.name) ? `Nombre en la resolución de 2017: ${d[5]}. ` : "";
+        const viejo = d && d[5] && key(d[5]) !== key(sp.name) ? `Nombre en la resolución: ${d[5]}. ` : "";
         sh.set(r, 4, d ? (nota + viejo + d[4]).trim() : "Sin coincidencia en la resolución.", S.txt2);
       });
       put(sh, r + 2, `Con coincidencia: ${hit} de ${lista.length} especies.`);
@@ -47,13 +47,14 @@ JS = r'''  // 6 · Estado de conservación nacional (Res. 795-E/2017): sólo en 
   } catch(e){ /* la hoja es un complemento: si algo falla, el resto del libro sale igual */ }
 '''
 
-def apply(s):
+def apply(s, archivo="aves-estado-ar.json"):
+    js = JS.replace("__ARCHIVO__", archivo)
     if MARCA in s:                       # versión anterior del parche: se reemplaza el bloque
         i = s.index("  // 6 · Estado"); j = s.index(ANCLA)
-        return s[:i] + JS + s[j:]
+        return s[:i] + js + s[j:]
     assert s.count(ANCLA) == 1, "no encuentro el punto de inserción en buildExport"
-    return s.replace(ANCLA, JS + ANCLA)
+    return s.replace(ANCLA, js + ANCLA)
 
 if __name__ == "__main__":
-    p = Path(sys.argv[1]); t = p.read_text(encoding="utf-8"); n = apply(t)
+    p = Path(sys.argv[1]); t = p.read_text(encoding="utf-8"); n = apply(t, *(sys.argv[2:3] or ["aves-estado-ar.json"]))
     p.write_text(n, encoding="utf-8"); print(p, "ya tenía el parche" if n == t else "parcheado")

@@ -23,6 +23,7 @@ FACES = """<style>
 """
 BAR = """<div id="kt-bar" style="display:flex;align-items:center;gap:12px;padding:6px 16px;background:var(--surface-2,#eaeee5);border-bottom:1px solid var(--line,#dde2d6);font:500 13px/1.2 var(--sans,system-ui,sans-serif);color:var(--ink-2,#465040)"><a href="/" onclick="event.preventDefault();setTimeout(function(){location.href='/'},700)" style="color:var(--accent,#3d6b1c);text-decoration:none;font-weight:600">&larr; Kenti Terrestre</a><span style="opacity:.6">/</span><span>%s</span></div>
 """
+ESTADO = {"aves": "aves-estado-ar.json", "mamiferos": "mamiferos-estado-ar.json", "herpetos": "herpetos-estado-ar.json"}
 def patch_master(s):
     """Dos correcciones al consolidador, halladas con las simulaciones (verificacion/sims.py):
     1) el encabezado de la matriz se elige primero por cantidad de celdas de texto (antes la suma con las
@@ -41,7 +42,7 @@ for gid, (f, nombre) in MODS.items():
     s = (SRC / f).read_text(encoding="utf-8")
     n_api = len(re.findall(r'"/api/', s))
     if gid == "global": s = patch_master(s)
-    if gid == "aves": s = patch_aves_estado(s)             # hoja de estado de conservación en el Excel de descarga
+    if gid in ESTADO: s = patch_aves_estado(s, ESTADO[gid])   # hoja de estado de conservación en el Excel de descarga
     s = s.replace('"/api/', '"api/')                       # relativo a /g/<id>/
     assert '/api/' not in s.replace('"api/', ''), gid
     s = s.replace("url(fuentes/", "url(/fuentes/").replace('href="icono.png"', 'href="/icono.png"')

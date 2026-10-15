@@ -2432,7 +2432,7 @@ async function buildExport(){
       put(sh, 3, `Fuente: ${ref.fuente}.`);
       if (ref.fuente_complementaria) put(sh, 5, `Complemento: ${ref.fuente_complementaria}.`);
       if (ref.taxonomia) put(sh, 2, `Taxonomía (orden, familia y nombres): ${ref.taxonomia}.`);
-      put(sh, 4, "Orden, familia y estado no intervienen en ningún cálculo. Se usa la nomenclatura actual de AviList; los nombres de la resolución de 2017 también se reconocen, y cuando difieren se indican en la nota.");
+      put(sh, 4, "Orden, familia y estado no intervienen en ningún cálculo. Se usa la nomenclatura actual de la lista de referencia citada arriba; los nombres de la resolución también se reconocen, y cuando difieren se indican en la nota.");
       ["Especie", "Orden", "Familia", "Estado de conservación (Argentina)", "Nota"].forEach((t, c) => sh.set(6, c, t, S.head));
       let r = 6, hit = 0;
       lista.forEach(sp => {
@@ -2441,7 +2441,7 @@ async function buildExport(){
         r++; if (d) hit++;
         sh.set(r, 0, sp.name, S.sp);
         sh.set(r, 1, d ? d[1] : "", S.txt); sh.set(r, 2, d ? d[2] : "", S.txt); sh.set(r, 3, d ? d[3] : "", S.txt);
-        const viejo = d && d[5] && key(d[5]) !== key(sp.name) ? `Nombre en la resolución de 2017: ${d[5]}. ` : "";
+        const viejo = d && d[5] && key(d[5]) !== key(sp.name) ? `Nombre en la resolución: ${d[5]}. ` : "";
         sh.set(r, 4, d ? (nota + viejo + d[4]).trim() : "Sin coincidencia en la resolución.", S.txt2);
       });
       put(sh, r + 2, `Con coincidencia: ${hit} de ${lista.length} especies.`);
