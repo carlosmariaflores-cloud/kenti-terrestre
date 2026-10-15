@@ -161,6 +161,7 @@ EXP = r'''  // 6 · Estimadores de riqueza (sólo sobre la tabla ya cargada) y 7
         header(sh, "Gremio, recurso y conservación de los taxones de la tabla");
         const fu = Array.isArray(ref.fuente) ? ref.fuente.join("; ") : ref.fuente;
         put(sh, 3, `Fuente: ${fu || "sin especificar"}.`);
+        if (ref.nota) put(sh, 5, ref.nota);
         put(sh, 4, "Estos datos son una referencia y no intervienen en ningún cálculo. Se asignan por nombre del taxón, por género o por familia; la columna de nota indica el nivel de la coincidencia y la fuente de cada fila. Un taxón sin coincidencia queda sin dato.");
         ["Taxón", "Orden", "Familia", "Gremio trófico", "Recurso / dieta", "Conservación", "Nota y fuente"].forEach((t, c) => sh.set(6, c, t, S.head));
         let r = 6, n = 0;

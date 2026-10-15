@@ -13,7 +13,7 @@ Described in: Flores, C. M. *Kenti Terrestre: an offline, configuration-driven d
 | `launcher/` | Go source (local server, per-group data folders, Windows/Linux platform code) and the embedded interfaces in `launcher/web/` |
 | `prep.py`, `home.html` | Build step that turns the specialist-module pages into `launcher/web/g/<group>.html` (relative API paths, back bar, two corrections to the consolidator) and writes the start screen |
 | `parches/` | Cambios que `prep.py` aplica a las páginas de cada módulo al armarlas (hoja de estado de conservación de Aves, Mamíferos y Herpetofauna; estimadores de riqueza y hoja de referencia ecológica de Entomología) |
-| `launcher/web/datos/` | Tablas de referencia embebidas (estado de conservación nacional: aves, Resolución 795-E/2017; mamíferos, Resolución 316/2021; herpetofauna, Resolución 1055/2013; y la referencia ecológica de insectos, vacía hasta cargar fuentes) |
+| `launcher/web/datos/` | Tablas de referencia embebidas (estado de conservación nacional: aves, Resolución 795-E/2017; mamíferos, Resolución 316/2021; herpetofauna, Resolución 1055/2013; y la referencia ecológica de insectos: gremio y recurso por familia, sin conservación todavía) |
 | `mkicon.py` | Generates the Windows icon resource (`.syso`) from `launcher/web/icono.png` |
 | `verificacion/` | End-to-end test (`e2e_global.py`), simulation studies (`sims.py`), figure scripts and their results (`resultado.json`, `simulaciones.json`) |
 

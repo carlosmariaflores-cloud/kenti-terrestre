@@ -1,5 +1,830 @@
 {
-  "_leeme": "Referencia ecológica de insectos para la hoja 7 del Excel de descarga. Cada fila de 'datos' es [taxón, orden, familia, gremio trófico, recurso o dieta, conservación, nota, fuente]. El taxón puede ser un nombre completo, 'Género especie', un género o una familia (se busca en ese orden). Mientras 'datos' esté vacío, el Excel sale sin la hoja 7. Cargar sólo datos con fuente citada.",
-  "fuente": [],
-  "datos": []
+ "_leeme": "Referencia ecológica de insectos para la hoja 7 del Excel de descarga. Cada fila de 'datos' es [taxón, orden, familia, gremio trófico, recurso o dieta, conservación, nota, fuente]. El taxón puede ser un nombre completo, 'Género especie', un género o una familia (se busca en ese orden). 'Conservación' está vacía a propósito: no hay datos cargados con fuente. Para agregar o corregir filas, editar este archivo.",
+ "nota": "Gremio predominante a nivel de familia (o género donde se indica). Dentro de una familia hay géneros con otros hábitos: revisar con el especialista. Pendiente: datos de Bolivia (gremios, nicho, conservación) que menciona la especialista.",
+ "fuente": [
+  "Triplehorn, C. A. y N. F. Johnson. 2005. Borror and DeLong's Introduction to the Study of Insects, 7.ª ed. Thomson Brooks/Cole (hábitos alimentarios por familia)",
+  "Mamani-Mamani, B., M. Loza-Murguía, H. Smeltekop, J. C. Almanza y M. Limachi. 2012. Diversidad genérica de hormigas (Himenópteros: Formicidae) en ambientes de bosque, borde de bosque y áreas cultivadas de tres comunidades del municipio de Coripata, Nor Yungas, La Paz, Bolivia. Journal of the Selva Andina Research Society 3(1) (hábitos de los géneros Labidus, Eciton, Acromyrmex, Odontomachus y Pachycondyla)"
+ ],
+ "datos": [
+  [
+   "Carabidae",
+   "Coleoptera",
+   "Carabidae",
+   "Depredador",
+   "Invertebrados epigeos",
+   "",
+   "Algunos géneros (p. ej. Harpalini) comen semillas. Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Staphylinidae",
+   "Coleoptera",
+   "Staphylinidae",
+   "Depredador",
+   "Invertebrados de hojarasca, suelo y carroña",
+   "",
+   "Hay también especies fungívoras, saprófagas y parasitoides. Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Tenebrionidae",
+   "Coleoptera",
+   "Tenebrionidae",
+   "Detritívoro",
+   "Materia vegetal en descomposición, semillas y hongos",
+   "",
+   "Algunos géneros son fitófagos. Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Scarabaeidae",
+   "Coleoptera",
+   "Scarabaeidae",
+   "Coprófago / herbívoro",
+   "Estiércol y carroña (Scarabaeinae); raíces y follaje (Melolonthinae y afines)",
+   "",
+   "El gremio depende de la subfamilia. Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Curculionidae",
+   "Coleoptera",
+   "Curculionidae",
+   "Herbívoro",
+   "Tejidos vegetales (hojas, raíces, frutos, semillas)",
+   "",
+   "Scolytinae: xilófagos y micetófagos. Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Chrysomelidae",
+   "Coleoptera",
+   "Chrysomelidae",
+   "Herbívoro",
+   "Follaje y raíces",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Elateridae",
+   "Coleoptera",
+   "Elateridae",
+   "Herbívoro / depredador",
+   "Raíces (larvas) o invertebrados del suelo",
+   "",
+   "Los adultos suelen alimentarse de poco o de polen. Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Coccinellidae",
+   "Coleoptera",
+   "Coccinellidae",
+   "Depredador",
+   "Áfidos y cochinillas",
+   "",
+   "Epilachninae son fitófagas; otras comen hongos. Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Histeridae",
+   "Coleoptera",
+   "Histeridae",
+   "Depredador",
+   "Larvas de dípteros en carroña y estiércol",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Silphidae",
+   "Coleoptera",
+   "Silphidae",
+   "Necrófago",
+   "Carroña",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Dermestidae",
+   "Coleoptera",
+   "Dermestidae",
+   "Detritívoro",
+   "Materia animal seca (queratina, carroña)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Cerambycidae",
+   "Coleoptera",
+   "Cerambycidae",
+   "Xilófago",
+   "Madera (larvas); polen y savia (adultos de algunos géneros)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Meloidae",
+   "Coleoptera",
+   "Meloidae",
+   "Parasitoide / herbívoro",
+   "Nidos de abejas y ootecas de acrídidos (larvas); follaje y flores (adultos)",
+   "",
+   "Desarrollo con hipermetamorfosis. Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Cicindelidae",
+   "Coleoptera",
+   "Cicindelidae",
+   "Depredador",
+   "Invertebrados epigeos",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Praocis",
+   "Coleoptera",
+   "Tenebrionidae",
+   "Detritívoro",
+   "Materia vegetal en descomposición, semillas y hongos",
+   "",
+   "Asignado a nivel de familia (Tenebrionidae); no se verificó a nivel de género.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Scotobius",
+   "Coleoptera",
+   "Tenebrionidae",
+   "Detritívoro",
+   "Materia vegetal en descomposición, semillas y hongos",
+   "",
+   "Asignado a nivel de familia (Tenebrionidae); no se verificó a nivel de género.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Nycterinus",
+   "Coleoptera",
+   "Tenebrionidae",
+   "Detritívoro",
+   "Materia vegetal en descomposición, semillas y hongos",
+   "",
+   "Asignado a nivel de familia (Tenebrionidae); no se verificó a nivel de género.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Bembidion",
+   "Coleoptera",
+   "Carabidae",
+   "Depredador",
+   "Invertebrados epigeos",
+   "",
+   "Asignado a nivel de familia (Carabidae); no se verificó a nivel de género.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Listroderes",
+   "Coleoptera",
+   "Curculionidae",
+   "Herbívoro",
+   "Tejidos vegetales",
+   "",
+   "Asignado a nivel de familia (Curculionidae); no se verificó a nivel de género.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Formicidae",
+   "Hymenoptera",
+   "Formicidae",
+   "Omnívoro (variable)",
+   "Presas, exudados azucarados, semillas u hongos según el género",
+   "",
+   "Muy variable entre subfamilias y géneros; para un marco funcional ver Andersen (1995, J. Biogeogr. 22: 15-29). Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Apidae",
+   "Hymenoptera",
+   "Apidae",
+   "Polinizador",
+   "Néctar y polen",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Halictidae",
+   "Hymenoptera",
+   "Halictidae",
+   "Polinizador",
+   "Néctar y polen",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Megachilidae",
+   "Hymenoptera",
+   "Megachilidae",
+   "Polinizador",
+   "Néctar y polen",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Andrenidae",
+   "Hymenoptera",
+   "Andrenidae",
+   "Polinizador",
+   "Néctar y polen",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Vespidae",
+   "Hymenoptera",
+   "Vespidae",
+   "Depredador",
+   "Artrópodos para las larvas; néctar los adultos",
+   "",
+   "Hay especies polinívoras (Masarinae). Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Ichneumonidae",
+   "Hymenoptera",
+   "Ichneumonidae",
+   "Parasitoide",
+   "Larvas y pupas de otros insectos",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Braconidae",
+   "Hymenoptera",
+   "Braconidae",
+   "Parasitoide",
+   "Larvas de otros insectos",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Pompilidae",
+   "Hymenoptera",
+   "Pompilidae",
+   "Parasitoide",
+   "Arañas",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Mutillidae",
+   "Hymenoptera",
+   "Mutillidae",
+   "Parasitoide",
+   "Nidos de abejas y avispas",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Labidus",
+   "Hymenoptera",
+   "Formicidae",
+   "Depredador",
+   "Invertebrados (legionaria, nómada)",
+   "",
+   "Hormiga legionaria sin colonias permanentes.",
+   "Mamani-Mamani et al. 2012 (Bolivia)"
+  ],
+  [
+   "Eciton",
+   "Hymenoptera",
+   "Formicidae",
+   "Depredador",
+   "Invertebrados (legionaria, en columnas)",
+   "",
+   "Hormiga legionaria.",
+   "Mamani-Mamani et al. 2012 (Bolivia)"
+  ],
+  [
+   "Acromyrmex",
+   "Hymenoptera",
+   "Formicidae",
+   "Fungívoro cultivador",
+   "Hongo cultivado sobre hojas cortadas",
+   "",
+   "Cortadora de hojas.",
+   "Mamani-Mamani et al. 2012 (Bolivia)"
+  ],
+  [
+   "Atta",
+   "Hymenoptera",
+   "Formicidae",
+   "Fungívoro cultivador",
+   "Hongo cultivado sobre hojas cortadas",
+   "",
+   "Cortadora de hojas.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Odontomachus",
+   "Hymenoptera",
+   "Formicidae",
+   "Depredador",
+   "Invertebrados (cazadora solitaria)",
+   "",
+   "",
+   "Mamani-Mamani et al. 2012 (Bolivia)"
+  ],
+  [
+   "Pachycondyla",
+   "Hymenoptera",
+   "Formicidae",
+   "Depredador",
+   "Invertebrados (cazadora solitaria)",
+   "",
+   "Nombre escrito Pachyconcyla en la fuente.",
+   "Mamani-Mamani et al. 2012 (Bolivia)"
+  ],
+  [
+   "Pogonomyrmex",
+   "Hymenoptera",
+   "Formicidae",
+   "Granívoro",
+   "Semillas",
+   "",
+   "Hormiga cosechadora.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Camponotus",
+   "Hymenoptera",
+   "Formicidae",
+   "Omnívoro",
+   "Exudados azucarados y artrópodos",
+   "",
+   "",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Dorymyrmex",
+   "Hymenoptera",
+   "Formicidae",
+   "Omnívoro",
+   "Exudados azucarados y artrópodos",
+   "",
+   "",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Solenopsis",
+   "Hymenoptera",
+   "Formicidae",
+   "Omnívoro",
+   "Artrópodos, semillas y exudados",
+   "",
+   "",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Bombus",
+   "Hymenoptera",
+   "Apidae",
+   "Polinizador",
+   "Néctar y polen",
+   "",
+   "",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Muscidae",
+   "Diptera",
+   "Muscidae",
+   "Detritívoro",
+   "Materia orgánica en descomposición y estiércol (larvas)",
+   "",
+   "Algunas especies son depredadoras o hematófagas. Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Calliphoridae",
+   "Diptera",
+   "Calliphoridae",
+   "Necrófago",
+   "Carroña y materia orgánica en descomposición (larvas)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Sarcophagidae",
+   "Diptera",
+   "Sarcophagidae",
+   "Necrófago",
+   "Carroña (larvas)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Syrphidae",
+   "Diptera",
+   "Syrphidae",
+   "Polinizador",
+   "Néctar y polen (adultos); áfidos o materia en descomposición (larvas)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Tipulidae",
+   "Diptera",
+   "Tipulidae",
+   "Detritívoro",
+   "Materia vegetal en descomposición (larvas)",
+   "",
+   "Algunas larvas comen raíces. Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Chironomidae",
+   "Diptera",
+   "Chironomidae",
+   "Detritívoro",
+   "Sedimento y partículas orgánicas (larvas acuáticas)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Culicidae",
+   "Diptera",
+   "Culicidae",
+   "Hematófago",
+   "Sangre (hembras); néctar (machos)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Tabanidae",
+   "Diptera",
+   "Tabanidae",
+   "Hematófago",
+   "Sangre (hembras)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Asilidae",
+   "Diptera",
+   "Asilidae",
+   "Depredador",
+   "Insectos capturados al vuelo",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Bombyliidae",
+   "Diptera",
+   "Bombyliidae",
+   "Parasitoide",
+   "Huevos y larvas de otros insectos (larvas); néctar (adultos)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Tachinidae",
+   "Diptera",
+   "Tachinidae",
+   "Parasitoide",
+   "Larvas de lepidópteros, coleópteros y otros insectos",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Drosophilidae",
+   "Diptera",
+   "Drosophilidae",
+   "Fungívoro / frugívoro",
+   "Levaduras y fruta fermentada",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Ephydridae",
+   "Diptera",
+   "Ephydridae",
+   "Detritívoro",
+   "Materia orgánica y microorganismos en ambientes húmedos o salinos",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Phoridae",
+   "Diptera",
+   "Phoridae",
+   "Detritívoro",
+   "Materia orgánica en descomposición",
+   "",
+   "Algunas especies son parasitoides. Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Acrididae",
+   "Orthoptera",
+   "Acrididae",
+   "Herbívoro",
+   "Pastos y herbáceas",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Romaleidae",
+   "Orthoptera",
+   "Romaleidae",
+   "Herbívoro",
+   "Follaje",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Gryllidae",
+   "Orthoptera",
+   "Gryllidae",
+   "Omnívoro",
+   "Materia vegetal y animal",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Tettigoniidae",
+   "Orthoptera",
+   "Tettigoniidae",
+   "Herbívoro / depredador",
+   "Follaje e invertebrados",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Cicadellidae",
+   "Hemiptera",
+   "Cicadellidae",
+   "Herbívoro",
+   "Savia de plantas",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Aphididae",
+   "Hemiptera",
+   "Aphididae",
+   "Herbívoro",
+   "Savia de plantas (floema)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Cicadidae",
+   "Hemiptera",
+   "Cicadidae",
+   "Herbívoro",
+   "Savia de xilema",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Pentatomidae",
+   "Hemiptera",
+   "Pentatomidae",
+   "Herbívoro",
+   "Savia y semillas",
+   "",
+   "Asopinae son depredadores. Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Lygaeidae",
+   "Hemiptera",
+   "Lygaeidae",
+   "Herbívoro",
+   "Semillas",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Coreidae",
+   "Hemiptera",
+   "Coreidae",
+   "Herbívoro",
+   "Savia y semillas",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Miridae",
+   "Hemiptera",
+   "Miridae",
+   "Herbívoro / depredador",
+   "Savia o pequeños artrópodos",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Reduviidae",
+   "Hemiptera",
+   "Reduviidae",
+   "Depredador",
+   "Artrópodos",
+   "",
+   "Triatominae son hematófagos. Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Noctuidae",
+   "Lepidoptera",
+   "Noctuidae",
+   "Herbívoro (larva) / nectarívoro (adulto)",
+   "Follaje (larvas); néctar (adultos)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Nymphalidae",
+   "Lepidoptera",
+   "Nymphalidae",
+   "Herbívoro (larva) / nectarívoro (adulto)",
+   "Follaje (larvas); néctar, fruta y exudados (adultos)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Pieridae",
+   "Lepidoptera",
+   "Pieridae",
+   "Herbívoro (larva) / nectarívoro (adulto)",
+   "Follaje (larvas); néctar (adultos)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Hesperiidae",
+   "Lepidoptera",
+   "Hesperiidae",
+   "Herbívoro (larva) / nectarívoro (adulto)",
+   "Follaje (larvas); néctar (adultos)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Geometridae",
+   "Lepidoptera",
+   "Geometridae",
+   "Herbívoro (larva) / nectarívoro (adulto)",
+   "Follaje (larvas); néctar (adultos)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Libellulidae",
+   "Odonata",
+   "Libellulidae",
+   "Depredador",
+   "Insectos voladores (adultos); invertebrados acuáticos (ninfas)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Coenagrionidae",
+   "Odonata",
+   "Coenagrionidae",
+   "Depredador",
+   "Insectos pequeños (adultos); invertebrados acuáticos (ninfas)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Aeshnidae",
+   "Odonata",
+   "Aeshnidae",
+   "Depredador",
+   "Insectos voladores (adultos); invertebrados acuáticos (ninfas)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Chrysopidae",
+   "Neuroptera",
+   "Chrysopidae",
+   "Depredador",
+   "Áfidos y otros artrópodos blandos (larvas); polen y néctar (adultos)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Myrmeleontidae",
+   "Neuroptera",
+   "Myrmeleontidae",
+   "Depredador",
+   "Hormigas y otros artrópodos (larvas)",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Mantidae",
+   "Mantodea",
+   "Mantidae",
+   "Depredador",
+   "Insectos",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Blattidae",
+   "Blattodea",
+   "Blattidae",
+   "Detritívoro",
+   "Materia orgánica en descomposición",
+   "",
+   "Omnívoro oportunista. Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Termitidae",
+   "Blattodea",
+   "Termitidae",
+   "Detritívoro",
+   "Madera, hojarasca y humus",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Forficulidae",
+   "Dermaptera",
+   "Forficulidae",
+   "Omnívoro",
+   "Materia vegetal y pequeños artrópodos",
+   "",
+   "Gremio predominante de la familia; hay excepciones entre géneros.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Tatochila",
+   "Lepidoptera",
+   "Pieridae",
+   "Herbívoro (larva) / nectarívoro (adulto)",
+   "Follaje (larvas); néctar (adultos)",
+   "",
+   "Asignado a nivel de familia (Pieridae); no se verificó a nivel de género.",
+   "Triplehorn y Johnson 2005"
+  ],
+  [
+   "Rhionaeschna",
+   "Odonata",
+   "Aeshnidae",
+   "Depredador",
+   "Insectos voladores (adultos); invertebrados acuáticos (ninfas)",
+   "",
+   "Asignado a nivel de familia (Aeshnidae); no se verificó a nivel de género.",
+   "Triplehorn y Johnson 2005"
+  ]
+ ]
 }
