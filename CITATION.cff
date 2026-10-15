@@ -1,8 +1,8 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "Kenti Terrestre"
-version: "0.1.1"
-date-released: "2026-10-06"
+version: "0.2.0"
+date-released: "2026-10-15"
 license: MIT
 repository-code: "https://github.com/carlosmariaflores-cloud/kenti-terrestre"
 url: "https://kenti.com.ar"

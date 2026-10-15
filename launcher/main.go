@@ -30,7 +30,7 @@ import (
 //go:embed web
 var webFS embed.FS
 
-const version = "0.1.1"
+const version = "0.2.0"
 
 // Valores fijados al compilar (-ldflags -X main.appID=...).
 var (

@@ -2,6 +2,8 @@
 """Arma web/ del Kenti Terrestre a partir de las interfaces de cada módulo."""
 import re, sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent / "parches"))
+from aves_estado import apply as patch_aves_estado
 SRC = Path(sys.argv[1]); OUT = Path(__file__).parent / "launcher" / "web"
 MODS = {  # id: (archivo, nombre)
  "flora": ("Botanico.html", "Flora"), "aves": ("Ornitologico.html", "Aves"),
@@ -39,6 +41,7 @@ for gid, (f, nombre) in MODS.items():
     s = (SRC / f).read_text(encoding="utf-8")
     n_api = len(re.findall(r'"/api/', s))
     if gid == "global": s = patch_master(s)
+    if gid == "aves": s = patch_aves_estado(s)             # hoja de estado de conservación en el Excel de descarga
     s = s.replace('"/api/', '"api/')                       # relativo a /g/<id>/
     assert '/api/' not in s.replace('"api/', ''), gid
     s = s.replace("url(fuentes/", "url(/fuentes/").replace('href="icono.png"', 'href="/icono.png"')
