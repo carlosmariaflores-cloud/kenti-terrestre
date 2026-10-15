@@ -1,0 +1,5 @@
+{
+  "_leeme": "Referencia ecológica de insectos para la hoja 7 del Excel de descarga. Cada fila de 'datos' es [taxón, orden, familia, gremio trófico, recurso o dieta, conservación, nota, fuente]. El taxón puede ser un nombre completo, 'Género especie', un género o una familia (se busca en ese orden). Mientras 'datos' esté vacío, el Excel sale sin la hoja 7. Cargar sólo datos con fuente citada.",
+  "fuente": [],
+  "datos": []
+}
