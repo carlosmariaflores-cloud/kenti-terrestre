@@ -43,6 +43,14 @@ HTML = '''<div class="card" id="estim-card">
         </div>
       </details>
     </div>
+    <div class="card" id="grem-card">
+      <div class="card-head">
+        <div><h3>Gremios tróficos y alimentación</h3><div class="sub">Taxones e individuos por gremio, según la referencia ecológica (por familia o género).</div></div>
+      </div>
+      <div class="tbl-wrap" id="grem-table"></div>
+      <div id="grem-det" style="margin-top:12px"></div>
+      <p class="foot" id="grem-note"></p>
+    </div>
     '''
 
 FN = r'''/* estimadores de riqueza */
@@ -112,6 +120,53 @@ function renderEstim(act){
   };
 }
 let lastEstim = null;
+
+/* gremios y alimentación (referencia ecológica) */
+let refIns;
+async function cargarRefIns(){
+  if (refIns !== undefined) return refIns;
+  try { const r = await fetch("/datos/insectos-referencia.json", {cache: "no-store"}); refIns = r.ok ? await r.json() : null; } catch(e){ refIns = null; }
+  return refIns;
+}
+const refKey = t => String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
+function refIdx(ref){ const m = new Map(); ((ref && ref.datos) || []).forEach(d => { if (d && d[0] && !m.has(refKey(d[0]))) m.set(refKey(d[0]), d); }); return m; }
+// se busca el nombre completo, luego género + epíteto y, por último, la primera palabra (género o familia)
+function refHallar(idx, nom){
+  const p = refKey(nom).split(" ");
+  for (const [k, niv] of [[p.join(" "), ""], [p.slice(0, 2).join(" "), "especie"], [p[0], p.length > 1 && /(idae|inae|oidea)$/.test(p[0]) ? "familia" : "género"]]) if (k && idx.has(k)) return [idx.get(k), niv];
+  return [null, ""];
+}
+function gremios(act, spp, ref){
+  const idx = refIdx(ref), por = new Map(), det = [];
+  spp.forEach(sp => {
+    const [d, niv] = refHallar(idx, sp.name), g = d ? (d[3] || "Sin dato") : "Sin dato";
+    det.push({sp, d, niv, g});
+    const ns = act.map(s => cellVal(sp, s)), N = ns.reduce((a, b) => a + b, 0); if (!N) return;
+    const o = por.get(g) || {g, S: 0, N: 0, sitios: act.map(() => 0)};
+    o.S++; o.N += N; ns.forEach((v, i) => o.sitios[i] += v); por.set(g, o);
+  });
+  const filas = [...por.values()].sort((a, b) => (a.g === "Sin dato") - (b.g === "Sin dato") || b.N - a.N);
+  return {det, filas, tot: filas.reduce((a, o) => a + o.N, 0), con: det.filter(x => x.d).length};
+}
+let gremTok = 0;
+async function renderGremios(act){
+  const card = $("#grem-card"); if (!card) return;
+  const tok = ++gremTok, ref = await cargarRefIns(); if (tok !== gremTok) return;
+  const spp = viewSpecies(), G = gremios(act, spp, ref);
+  const f = (v, d) => fmt(v, d);
+  if (!G.con){
+    $("#grem-table").innerHTML = `<div class="empty">${ref && (ref.datos || []).length ? "Ningún taxón de la tabla coincide con la referencia (se busca por nombre, género o familia)." : "La referencia ecológica no tiene datos cargados."}</div>`;
+    $("#grem-det").innerHTML = ""; $("#grem-note").textContent = ""; return;
+  }
+  let t = `<table class="res"><thead><tr><th>Gremio trófico</th><th><span class="sym">S</span>Taxones</th><th><span class="sym">N</span>Individuos</th><th><span class="sym">%</span>del total</th>${act.map(s => `<th title="${esc(s.name || "")}">${esc(s.code)}</th>`).join("")}</tr></thead><tbody>`;
+  G.filas.forEach(o => { t += `<tr><td>${esc(o.g)}</td><td>${o.S}</td><td>${f(o.N, 0)}</td><td>${G.tot ? f(100 * o.N / G.tot, 1) : "—"}</td>${o.sitios.map(v => `<td>${f(v, 0)}</td>`).join("")}</tr>`; });
+  $("#grem-table").innerHTML = t + `</tbody></table>`;
+  let d = `<details class="formulas"><summary>Detalle por taxón (${G.con} de ${G.det.length} con dato)</summary><div class="tbl-wrap"><table class="res"><thead><tr>${["Taxón","Orden","Familia","Gremio trófico","Recurso / dieta","Coincidencia"].map(h => `<th style="text-align:left">${h}</th>`).join("")}</tr></thead><tbody>`;
+  G.det.forEach(x => { d += `<tr><td style="text-align:left"><em>${esc(x.sp.name)}</em></td>${x.d ? [1, 2, 3, 4].map(c => `<td style="text-align:left;white-space:normal">${esc(x.d[c] || "")}</td>`).join("") : `<td colspan="4" style="text-align:left;color:var(--ink-2)">Sin dato en la referencia</td>`}<td style="text-align:left">${x.niv ? "A nivel de " + x.niv : x.d ? "Nombre" : ""}</td></tr>`; });
+  $("#grem-det").innerHTML = d + `</tbody></table></div></details>`;
+  const fu = ref && (Array.isArray(ref.fuente) ? ref.fuente.join("; ") : ref.fuente);
+  $("#grem-note").textContent = `${ref.nota ? ref.nota + " " : ""}Fuente: ${fu || "sin especificar"}. La referencia no incluye todavía estrato ni microhábitat (nicho); el recurso o dieta está en el detalle por taxón.`;
+}
 '''
 
 EXP = r'''  // 6 · Estimadores de riqueza (sólo sobre la tabla ya cargada) y 7 · Referencia ecológica (opcional)
@@ -147,31 +202,28 @@ EXP = r'''  // 6 · Estimadores de riqueza (sólo sobre la tabla ya cargada) y 7
       r += 2; put(sh, r, "Chao, A. 1984. Scand. J. Stat. 11: 265-270 · Chao, A. 1987. Biometrics 43: 783-791 · Burnham, K. P. y W. S. Overton. 1979. Ecology 60: 927-936 · Colwell, R. K. y J. A. Coddington. 1994. Phil. Trans. R. Soc. B 345: 101-118.");
       sh.freeze = [7, 1]; sh.widths = {0: 22, 1: 28, 2: 14, 3: 14, 4: 14, 5: 14, 6: 12, 7: 20};
     }
-    const ref = await (async () => { try { const r = await fetch("/datos/insectos-referencia.json", {cache: "no-store"}); return r.ok ? await r.json() : null; } catch(e){ return null; } })();
+    const ref = await cargarRefIns();
     if (ref && Array.isArray(ref.datos) && ref.datos.length && sppE.length){
-      const key = t => String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
-      const idx = new Map(); ref.datos.forEach(d => { if (d && d[0] && !idx.has(key(d[0]))) idx.set(key(d[0]), d); });
-      // se busca el nombre completo, luego género + epíteto y, por último, la primera palabra (género o familia)
-      const hallar = nom => { const p = key(nom).split(" ");
-        for (const [k, niv] of [[p.join(" "), ""], [p.slice(0, 2).join(" "), "especie"], [p[0], p.length > 1 && /(idae|inae|oidea)$/.test(p[0]) ? "familia" : "género"]]) if (k && idx.has(k)) return [idx.get(k), niv];
-        return [null, ""]; };
-      const hits = sppE.map(sp => [sp, ...hallar(sp.name)]);
-      if (hits.some(h => h[1])){
+      const G = gremios(actE, sppE, ref);
+      if (G.con){
         const sh = new XSheet("7 Referencia ecológica"); sheets.push(sh);
         header(sh, "Gremio, recurso y conservación de los taxones de la tabla");
         const fu = Array.isArray(ref.fuente) ? ref.fuente.join("; ") : ref.fuente;
         put(sh, 3, `Fuente: ${fu || "sin especificar"}.`);
         if (ref.nota) put(sh, 5, ref.nota);
-        put(sh, 4, "Estos datos son una referencia y no intervienen en ningún cálculo. Se asignan por nombre del taxón, por género o por familia; la columna de nota indica el nivel de la coincidencia y la fuente de cada fila. Un taxón sin coincidencia queda sin dato.");
+        put(sh, 4, "La referencia no interviene en los índices, la similitud ni el PCA. Se asigna por nombre del taxón, por género o por familia; la nota indica el nivel de la coincidencia y la fuente de cada fila. Un taxón sin coincidencia queda sin dato. La composición por gremio (abajo) se calcula con la tabla de individuos.");
         ["Taxón", "Orden", "Familia", "Gremio trófico", "Recurso / dieta", "Conservación", "Nota y fuente"].forEach((t, c) => sh.set(6, c, t, S.head));
-        let r = 6, n = 0;
-        hits.forEach(([sp, d, niv]) => {
-          r++; if (d) n++;
+        let r = 6;
+        G.det.forEach(({sp, d, niv}) => {
+          r++;
           sh.set(r, 0, sp.name, S.sp);
           [1, 2, 3, 4, 5].forEach(c => sh.set(r, c, d ? (d[c] || "") : "", S.txt));
           sh.set(r, 6, d ? [niv ? `Coincide a nivel de ${niv}.` : "", d[6] || "", d[7] ? `Fuente: ${d[7]}.` : ""].filter(Boolean).join(" ") : "Sin dato en la referencia.", S.txt2);
         });
-        put(sh, r + 2, `Con dato: ${n} de ${sppE.length} taxones.`);
+        put(sh, r + 2, `Con dato: ${G.con} de ${sppE.length} taxones.`);
+        r += 4; sh.set(r, 0, "Composición por gremio trófico", S.colB); r++;
+        sh.row(r, 0, ["Gremio trófico", "Taxones (S)", "Individuos (N)", "% del total", ...actE.map(s => s.code)], [S.head, S.headR, S.headR, S.headR, ...actE.map(() => S.headR)]);
+        G.filas.forEach(o => { r++; sh.set(r, 0, o.g, S.txt); sh.set(r, 1, o.S, S.gen); sh.set(r, 2, o.N, S.gen); sh.set(r, 3, G.tot ? 100 * o.N / G.tot : "", S.p1); o.sitios.forEach((v, i) => sh.set(r, 4 + i, v, S.gen)); });
         sh.freeze = [7, 1]; sh.widths = {0: 28, 1: 18, 2: 18, 3: 22, 4: 30, 5: 26, 6: 60};
       }
     }
@@ -186,7 +238,7 @@ def apply(s):
         assert s.count(a) == 1, f"no encuentro el punto de inserción: {a[:40]}"
     s = s.replace(ANCLA_FN, FN + ANCLA_FN)
     s = s.replace(ANCLA_HTML, HTML + ANCLA_HTML)
-    s = s.replace(ANCLA_REND, "  renderEstim(act);\n" + ANCLA_REND)
+    s = s.replace(ANCLA_REND, "  renderEstim(act); renderGremios(act);\n" + ANCLA_REND)
     s = s.replace(ANCLA_EXP, EXP + ANCLA_EXP)
     return s
 
